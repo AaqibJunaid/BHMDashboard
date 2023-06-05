@@ -31,7 +31,7 @@ export default class MainApp extends Component {
 
       var prayerItem;
 
-      if (prayerName=='Sunrise'){
+      if (prayerName==='Sunrise'){
         prayerItem = (
           <div id={prayerName} className='PrayerTime'>
             <div id={prayerName+'Body'} className='PrayerBody'>
@@ -77,7 +77,6 @@ export default class MainApp extends Component {
   }
 
   updateNextPrayer(nextPrayer){
-    var now = new Date();
     var nextPrayerName = nextPrayer.Name
     var nextPrayerType = nextPrayer.Type
  
@@ -87,7 +86,7 @@ export default class MainApp extends Component {
       var arabicName;
 
       for (var i=0;i<this.state.PrayerNames.length;i++){
-        if (this.state.PrayerNames[i]==nextPrayerName){
+        if (this.state.PrayerNames[i]===nextPrayerName){
           arabicName = this.state.arabicPrayerNames[i]
           break;
         }
@@ -105,10 +104,10 @@ export default class MainApp extends Component {
 
    updatePrayerList(){
 
-    var todayTimes=mosqueTimes.filter( element => element.Date == this.getTodaysDate())[0]
+    var todayTimes=mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0]
     
     this.state.PrayerNames.forEach(function(prayerName) {
-      if (prayerName =='Sunrise'){
+      if (prayerName ==='Sunrise'){
         document.getElementById('SunriseStartText').innerText=(todayTimes[prayerName]).substring(0,5)
       }
       else{
@@ -146,7 +145,7 @@ export default class MainApp extends Component {
       minutes = now.getMinutes()
     }
 
-    if (this.state.currentDynamicArea == 'ClockDate'){
+    if (this.state.currentDynamicArea === 'ClockDate'){
       document.getElementById('NextPrayerArea').style.display='none'
       document.getElementById('DateTimeArea').style.display='flex'
       document.getElementById('Time').innerText=hours+ ':' +minutes
@@ -184,9 +183,9 @@ export default class MainApp extends Component {
     }
 
     
-    if(this.state.dynamicSwitchCounter==this.state.dynamicSwitchMax){
+    if(this.state.dynamicSwitchCounter===this.state.dynamicSwitchMax){
       this.setState({dynamicSwitchCounter:0})
-      if(this.state.currentDynamicArea == 'ClockDate'){
+      if(this.state.currentDynamicArea === 'ClockDate'){
         this.setState({currentDynamicArea:'NextPrayer'})
       }
       else{
@@ -196,7 +195,7 @@ export default class MainApp extends Component {
   }
 
   updateLanguage(){
-    if (this.state.switchToArabic==true){
+    if (this.state.switchToArabic === true){
       for (var i=0;i<this.state.PrayerNames.length;i++){
         document.getElementById(this.state.PrayerNames[i]+'LabelText').innerText=this.state.arabicPrayerNames[i]
       }
@@ -206,7 +205,7 @@ export default class MainApp extends Component {
       document.getElementById(prayer+'LabelText').innerText=prayer
       })
     }
-    if(this.state.languageSwitchCouter==this.state.arabicSwitchMax){
+    if(this.state.languageSwitchCouter === this.state.arabicSwitchMax){
       this.setState({switchToArabic:!this.state.switchToArabic,languageSwitchCouter:0})
     }
     else{
@@ -232,7 +231,7 @@ export default class MainApp extends Component {
 
     for (var i=0; i < this.state.PrayerNames.length;i++){
 
-      if(this.state.PrayerNames[i]=='Fajr'){
+      if(this.state.PrayerNames[i]==='Fajr'){
         if (now<new Date(now.toDateString() + ' ' + times['Fajr Start'])){
             currentPrayer={'Name':'All','Index':i}
             break;
@@ -241,7 +240,6 @@ export default class MainApp extends Component {
 
       if (now >= new Date(now.toDateString() + ' ' + times['Sunrise']) && now < new Date(now.toDateString() + ' ' + times['Zuhur Start'])){
         
-        var now = new Date();
         var sunriseTime = new Date(now.toDateString() + ' ' + times['Sunrise'])
         var timeDiff = now-sunriseTime;
     
@@ -259,15 +257,15 @@ export default class MainApp extends Component {
         var startTime;
         var nextTime;
 
-        if(this.state.PrayerNames[i]=='Fajr'){
+        if(this.state.PrayerNames[i]==='Fajr'){
           startTime = new Date(now.toDateString() + ' ' + times[this.state.PrayerNames[i]+' Start'])
           nextTime = new Date(now.toDateString() + ' ' + times['Sunrise'])
         }
-        else if (this.state.PrayerNames[i]=='Sunrise'){
+        else if (this.state.PrayerNames[i]==='Sunrise'){
           startTime = new Date(now.toDateString() + ' ' + times[this.state.PrayerNames[i]])
           nextTime = new Date(now.toDateString() + ' ' + times[this.state.PrayerNames[i+1]+ ' Start'])
         }
-        else if(this.state.PrayerNames[i]=='Isha'){
+        else if(this.state.PrayerNames[i]==='Isha'){
           currentPrayer={'Name':this.state.PrayerNames[i],'Index':i}
           break;
         }
@@ -289,14 +287,14 @@ export default class MainApp extends Component {
     var prayerColours = []
     var passedCount = 0
 
-    if (currentPrayer=='All'){
+    if (currentPrayer==='All'){
       this.state.PrayerNames.forEach(function(prayerName){
         prayerColours.push({'Name':prayerName,'Background':'darkgray','Jamat':'lightslategrey','JamatText':'Azure','MainText':'Ghostwhite'})
       })
     }
-    else if(currentPrayer == 'PastSunrise'){
+    else if(currentPrayer === 'PastSunrise'){
       for (var i=0; i<this.state.PrayerNames.length;i++){
-        if (this.state.PrayerNames[i]=='Fajr' || this.state.PrayerNames[i]=='Sunrise'){
+        if (this.state.PrayerNames[i]==='Fajr' || this.state.PrayerNames[i]==='Sunrise'){
           prayerColours.push({'Name':this.state.PrayerNames[i],'Background':'dimgrey','Jamat':'grey','JamatText':'dimgrey','MainText':'grey'})
         }
         else{
@@ -306,7 +304,7 @@ export default class MainApp extends Component {
     }
     else{
       for (var i=0; i<this.state.PrayerNames.length;i++){
-        if (this.state.PrayerNames[i] == currentPrayer){
+        if (this.state.PrayerNames[i] === currentPrayer){
           prayerColours.push({'Name':this.state.PrayerNames[i],'Background':'cadetblue','Jamat':'burlywood','JamatText':'Azure','MainText':'Ghostwhite'})
           break;
         }
@@ -332,7 +330,7 @@ export default class MainApp extends Component {
 
     for (var i = 0; i < this.state.PrayerNames.length; i++) {
 
-      if (this.state.PrayerNames[i]=='Sunrise'){
+      if (this.state.PrayerNames[i]==='Sunrise'){
         var sunrise = new Date(now.toDateString() + ' ' + times[this.state.PrayerNames[i]]);
         if (sunrise > now) {
           nextPrayerTime = {'Name':this.state.PrayerNames[i],'Type': 'Begins','Time':sunrise};
@@ -351,7 +349,7 @@ export default class MainApp extends Component {
           nextPrayerTime = {'Name':this.state.PrayerNames[i], 'Type': 'Jamat','Time':jamatTime};
           break;
         }
-        if(this.state.PrayerNames[i]=='Isha'&&nextPrayerTime==undefined){
+        if(this.state.PrayerNames[i]==='Isha'&&nextPrayerTime==undefined){
           const today = new Date()
           const tomorrow = new Date(today)
           tomorrow.setDate(tomorrow.getDate() + 1)
@@ -368,7 +366,7 @@ export default class MainApp extends Component {
 
           var tomorrowDate=date+'/'+month+'/'+tomorrow.getFullYear()
    
-          var tomorrowTimes=mosqueTimes.filter( element => element.Date == tomorrowDate)[0]
+          var tomorrowTimes=mosqueTimes.filter( element => element.Date === tomorrowDate)[0]
 
           var tomorrowPrayer =new Date(tomorrow.toDateString() + ' ' + tomorrowTimes['Fajr Start']);
           nextPrayerTime = {'Name':'Fajr','Type':'Prayer','Time':tomorrowPrayer};
