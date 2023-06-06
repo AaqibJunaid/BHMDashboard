@@ -20,11 +20,13 @@ export default class MainApp extends Component {
       holdNextPrayer:false,
       holdCounter:0,
       dynamicSwitchMax:20,
-      arabicSwitchMax:9,
+      arabicSwitchMax:10,
       todayData:mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0],
       tomorrowData:{},
+      lastKnownData:{},
       currentIslamicDate:"",
-      dataStatus:"Initalising Application..."
+      dataStatus:"Initialising Application...",
+      errorMessage:''
     }
   }
   
@@ -150,22 +152,57 @@ export default class MainApp extends Component {
         document.getElementById(prayer.Name+'StartText').style.color=prayer.MainText
         document.getElementById(prayer.Name+'JamatText').style.color=prayer.JamatText
     })
+  }
 
+  getLongDate(){
+    const today = new Date();
+    const day = today.getDate();
+    var suffix = this.getDaySuffix(day);
+    const month = today.toLocaleString('default', { month: 'long' });
+    const year = today.getFullYear();
+
+    const formattedDate = this.getDayOfWeek(today) + '\n ' + day + suffix + ' ' + month + ' ' + year;
+    return formattedDate;
+  }
+
+  updateLanguage(){
+    if (this.state.switchToArabic === true){
+      for (var i=0;i<this.state.PrayerNames.length;i++){
+        document.getElementById(this.state.PrayerNames[i]+'LabelText').innerText=this.state.arabicPrayerNames[i]
+      }      
+      if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
+        document.getElementById('Date').innerText=this.getLongDate()
+        document.getElementById('Date').style.fontSize='1.7vw'
+      }
+      else{
+        console.log("islamic date")
+        document.getElementById('Date').innerText=this.state.currentIslamicDate
+        document.getElementById('Date').style.fontSize='1.3vw'
+      }
+    }
+    else{
+      this.state.PrayerNames.forEach(function (prayer){
+        document.getElementById(prayer+'LabelText').innerText=prayer
+      })
+      document.getElementById('Date').innerText=this.getLongDate()
+      document.getElementById('Date').style.fontSize='1.7vw'
+    }
+
+    if(this.state.languageSwitchCouter === this.state.arabicSwitchMax){
+      this.setState({switchToArabic:!this.state.switchToArabic,languageSwitchCouter:0})
+    }
+    else{
+      this.setState({languageSwitchCouter:this.state.languageSwitchCouter+1})
+    }
+
+  }
+
+  updateDynamicBox(){
+    var todayTimes=this.state.todayData
     if (this.state.currentDynamicArea === 'ClockDate'){
       document.getElementById('NextPrayerArea').style.display='none'
       document.getElementById('DateTimeArea').style.display='flex'
       document.getElementById('Time').innerText=this.getCurrentTime()
-      // if (this.state.switchToArabic){
-      //   document.getElementById('Date').innerText=this.getIslamicDate()
-      //   document.getElementById('Date').style.fontSize='1.3vw'
-      // }
-      // else{
-        document.getElementById('Date').innerText=this.getLongDate()
-        document.getElementById('Date').style.fontSize='1.7vw'
-      // }
-      this.setState({dynamicSwitchCounter:this.state.dynamicSwitchCounter+1})
-      //will force switch to prayer countdown if needed
-      this.nextPrayerTimeDifference(this.getNextPrayerTime(todayTimes))
     }
     else{
       document.getElementById('DateTimeArea').style.display='none'
@@ -185,10 +222,12 @@ export default class MainApp extends Component {
       // else{
         this.updateNextPrayer(this.getNextPrayerTime(todayTimes))
       // }
-      this.setState({dynamicSwitchCounter:this.state.dynamicSwitchCounter+1})
     }
 
-    
+    this.setState({dynamicSwitchCounter:this.state.dynamicSwitchCounter+1})
+    //will force switch to prayer countdown if needed
+    this.nextPrayerTimeDifference(this.getNextPrayerTime(todayTimes))
+
     if(this.state.dynamicSwitchCounter===this.state.dynamicSwitchMax){
       this.setState({dynamicSwitchCounter:0})
       if(this.state.currentDynamicArea === 'ClockDate'){
@@ -199,24 +238,10 @@ export default class MainApp extends Component {
       }
     }
   }
-
-  updateLanguage(){
-    if (this.state.switchToArabic === true){
-      for (var i=0;i<this.state.PrayerNames.length;i++){
-        document.getElementById(this.state.PrayerNames[i]+'LabelText').innerText=this.state.arabicPrayerNames[i]
-      }
-    }
-    else{
-      this.state.PrayerNames.forEach(function (prayer){
-      document.getElementById(prayer+'LabelText').innerText=prayer
-      })
-    }
-    if(this.state.languageSwitchCouter === this.state.arabicSwitchMax){
-      this.setState({switchToArabic:!this.state.switchToArabic,languageSwitchCouter:0})
-    }
-    else{
-      this.setState({languageSwitchCouter:this.state.languageSwitchCouter+1})
-    }
+  
+  syncBottomPanel(){
+    this.updateLanguage()
+    this.updateDynamicBox()
   }
 
   getTodaysDate() {
@@ -378,12 +403,9 @@ export default class MainApp extends Component {
           const today = new Date()
           const tomorrow = new Date(today)
           tomorrow.setDate(tomorrow.getDate() + 1)
-   
-          var tomorrowTimes=mosqueTimes.filter( element => element.Date === this.getTomorrowDate())[0]
 
-          var tomorrowPrayer =new Date(tomorrow.toDateString() + ' ' + tomorrowTimes['Fajr Start']);
+          var tomorrowPrayer =new Date(tomorrow.toDateString() + ' ' + this.state.tomorrowData['Fajr Start']);
 
-          console.log(tomorrowPrayer)
           nextPrayerTime = {'Name':'Fajr','Type':'Prayer','Time':tomorrowPrayer};
         }
       }
@@ -409,18 +431,6 @@ export default class MainApp extends Component {
       }
     }
   }
-
-  getLongDate(){
-    const today = new Date();
-    const day = today.getDate();
-    var suffix = this.getDaySuffix(day);
-    const month = today.toLocaleString('default', { month: 'long' });
-    const year = today.getFullYear();
-
-    const formattedDate = this.getDayOfWeek(today) + '\n ' + day + suffix + ' ' + month + ' ' + year;
-    return formattedDate;
-  }
-
 
   getDayOfWeek(date) {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -457,31 +467,103 @@ export default class MainApp extends Component {
     )
     else if(seconds>=0){
       displayTime = seconds+'s';
-      this.setState({currentDynamicArea:'NextPrayer',dynamicSwitchCounter:0})
+      this.setState({currentDynamicArea:'NextPrayer',dynamicSwitchCounter:0,switchToArabic:false,languageSwitchCouter:0})
     }
     return displayTime
   }
 
-  getData = async () => {
-    await axios.get('https://mosquerestapi.glitch.me/',{'headers':'Access-Control-Allow-Origin:*'}).then(res=>{
-    if (res.data.Status == 'Successfull'){
-      
-      this.setState({todayData:res.data.Data.todayData,tomorrowData:res.data.Data.tomorrowData,currentIslamicDate:res.data.Data.hijriDate,dataStatus:"Times Last Updated: "+this.getCurrentTime()})
-    
+  handleError(show){
+    if(show){
+      document.getElementById('Logo').style.height='92.5%'
+      document.getElementById('Error').style.display='flex'
     }
     else{
-      console.log(res.data.Data)
+    document.getElementById('Logo').style.height='95%'
+    document.getElementById('Error').style.display='none'
+    }
+  }
+
+  handleApiError(err){
+    if (this.state.lastKnownData==""){
+      var todayData = mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0]
+      const today = new Date()
+      const tomorrow = new Date(today)
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      var tomorrowData=mosqueTimes.filter( element => element.Date === this.getTomorrowDate())[0]
+
+      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+    }
+    else if(this.state.lastKnownData.lastRefreshed == this.getTodaysDate()){
+      
+      this.setState({todayData:this.state.lastKnownData.todayData,tomorrowData:this.state.lastKnownData.tomorrowData,currentIslamicDate:this.state.lastKnownData.hijriDate,dataStatus:"Data Failed to Refresh"})
+
+    }
+    else{
+      var todayData = mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0]
+      const today = new Date()
+      const tomorrow = new Date(today)
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      var tomorrowData=mosqueTimes.filter( element => element.Date === this.getTomorrowDate())[0]
+
+      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+    }
+
+    if(err=='Network Error'){
+      this.setState({errorMessage:"Network Error"})
+    }
+    else if(err.includes('401')){
+      this.setState({errorMessage:'401 Error'})
+    }
+    else if(err.includes('402')){
+      this.setState({errorMessage:'402 Error'})
+    }
+    else if(err.includes('403')){
+      this.setState({errorMessage:'403 Error'})
+    }
+    else if(err.includes('404')){
+      this.setState({errorMessage:'404 Error'})
+    }
+    else{
+      this.setState({errorMessage:err})
+    }
+
+    this.handleError(true)
+  }
+
+  callAPI = async () => {
+    await axios.get('https://mosquerestapi.glitch.me/',{'headers':'Access-Control-Allow-Origin:*'}).then(res=>{
+    if (res.data.Status == 'Successfull'){
+      this.setState({todayData:res.data.Data.todayData,tomorrowData:res.data.Data.tomorrowData,currentIslamicDate:res.data.Data.hijriDate,dataStatus:"Data Refreshed at "+this.getCurrentTime()})
+      this.setState({lastKnownData:{'lastRefreshed':this.getTodaysDate(),'todayData':this.state.todayData,'tomorrowData':res.data.Data.tomorrowData,'hijriDate':res.data.Data.hijriDate}})
+      this.handleError(false)
+    }
+    else{
+      this.handleApiError(res.data.Data)
     }
     })
     .catch(err=>{
-      console.log(err)
+      this.handleApiError(err.message)
+      console.log(err.message)
     })
+  }
+
+  getData(){
+    var minute = this.getCurrentTime()
+    minute = minute.substring(3,5)
+
+    if (minute=="00" || minute=="30"){
+      this.callAPI()
+    }
+    else if(this.state.dataStatus=='Running on Backup Data' || this.state.dataStatus=='Data Failed to Refresh'){
+      this.callAPI()
+    }
   }
 
   componentDidMount(){
     this.interval = setInterval(() => this.updatePrayerList(), 1000);
-    this.interval = setInterval(() => this.updateLanguage(), 1000);
-    this.getData()
+    this.interval = setInterval(() => this.syncBottomPanel(), 1000);
+    this.callAPI()
+    this.interval = setInterval(() => this.getData(), 30000);
   }
 
   render(){
@@ -522,8 +604,9 @@ export default class MainApp extends Component {
           </div>
         </div>
         <div id="SidePanel">
-          <img src={sidePanel} width="100%" height="95%" id="'Logo"></img>
+          <img src={sidePanel} width="100%" height="92.5%" id="Logo"></img>
           <div id='Status'>{this.state.dataStatus}</div>
+          <div id='Error'>{this.state.errorMessage}</div>
         </div>
       </div>
     );
