@@ -3,6 +3,7 @@ import React, { Component} from 'react';
 import MainDashboardVideo from './Assets/MainVideoDashboard.mp4'
 import sidePanel from './Assets/SideBarWebsite.png'
 import mosqueTimes from './mosqueTimes.json'
+import axios from 'axios';
 
 export default class MainApp extends Component {
 
@@ -19,7 +20,11 @@ export default class MainApp extends Component {
       holdNextPrayer:false,
       holdCounter:0,
       dynamicSwitchMax:20,
-      arabicSwitchMax:10
+      arabicSwitchMax:9,
+      todayData:mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0],
+      tomorrowData:{},
+      currentIslamicDate:"",
+      dataStatus:"Initalising Application..."
     }
   }
   
@@ -66,8 +71,6 @@ export default class MainApp extends Component {
         )
       }
 
-
-
       prayerLists.push(prayerItem)
 
     })
@@ -102,9 +105,30 @@ export default class MainApp extends Component {
     document.getElementById('NextPrayerTimeLabel').innerText=displayTime
   }
 
+  getCurrentTime(){
+    var now=new Date()
+    var hours;
+    var minutes;
+    
+    if(now.getHours()<10){
+      hours='0'+now.getHours()
+    }
+    else{
+      hours = now.getHours()
+    }
+
+    if(now.getMinutes()<10){
+      minutes='0'+now.getMinutes()
+    }
+    else{
+      minutes = now.getMinutes()
+    }
+    return hours+ ':' +minutes
+  }
+
    updatePrayerList(){
 
-    var todayTimes=mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0]
+    var todayTimes=this.state.todayData
     
     this.state.PrayerNames.forEach(function(prayerName) {
       if (prayerName ==='Sunrise'){
@@ -127,28 +151,10 @@ export default class MainApp extends Component {
         document.getElementById(prayer.Name+'JamatText').style.color=prayer.JamatText
     })
 
-    var now=new Date()
-    var hours;
-    var minutes;
-    
-    if(now.getHours()<10){
-      hours='0'+now.getHours()
-    }
-    else{
-      hours = now.getHours()
-    }
-
-    if(now.getMinutes()<10){
-      minutes='0'+now.getMinutes()
-    }
-    else{
-      minutes = now.getMinutes()
-    }
-
     if (this.state.currentDynamicArea === 'ClockDate'){
       document.getElementById('NextPrayerArea').style.display='none'
       document.getElementById('DateTimeArea').style.display='flex'
-      document.getElementById('Time').innerText=hours+ ':' +minutes
+      document.getElementById('Time').innerText=this.getCurrentTime()
       // if (this.state.switchToArabic){
       //   document.getElementById('Date').innerText=this.getIslamicDate()
       //   document.getElementById('Date').style.fontSize='1.3vw'
@@ -322,6 +328,24 @@ export default class MainApp extends Component {
     }
     return prayerColours
   }
+
+  getTomorrowDate(){
+    const today = new Date()
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    var month= (tomorrow.getMonth())+1
+    var date = tomorrow.getDate()
+
+    if (month<10){
+      month = '0'+month
+    }
+
+    if (date<10){
+      date = '0'+date
+    }
+
+    return date+'/'+month+'/'+tomorrow.getFullYear()
+  }
   
   getNextPrayerTime(times) {
 
@@ -350,25 +374,16 @@ export default class MainApp extends Component {
           break;
         }
         if(this.state.PrayerNames[i]==='Isha'&&nextPrayerTime==undefined){
+
           const today = new Date()
           const tomorrow = new Date(today)
           tomorrow.setDate(tomorrow.getDate() + 1)
-          var month= (tomorrow.getMonth())+1
-          var date = tomorrow.getDate()
-
-          if (month<10){
-            month = '0'+month
-          }
-
-          if (date<10){
-            date = '0'+date
-          }
-
-          var tomorrowDate=date+'/'+month+'/'+tomorrow.getFullYear()
    
-          var tomorrowTimes=mosqueTimes.filter( element => element.Date === tomorrowDate)[0]
+          var tomorrowTimes=mosqueTimes.filter( element => element.Date === this.getTomorrowDate())[0]
 
           var tomorrowPrayer =new Date(tomorrow.toDateString() + ' ' + tomorrowTimes['Fajr Start']);
+
+          console.log(tomorrowPrayer)
           nextPrayerTime = {'Name':'Fajr','Type':'Prayer','Time':tomorrowPrayer};
         }
       }
@@ -416,7 +431,7 @@ export default class MainApp extends Component {
   nextPrayerTimeDifference(nextPrayer){
     var now = new Date();
     var nextPrayerTime = nextPrayer.Time
-    var timeDiff = nextPrayer.Time - now;
+    var timeDiff = nextPrayerTime - now;
     var displayTime
  
     var hours = Math.floor(timeDiff / (1000 * 60 * 60));
@@ -447,9 +462,26 @@ export default class MainApp extends Component {
     return displayTime
   }
 
+  getData = async () => {
+    await axios.get('https://mosquerestapi.glitch.me/',{'headers':'Access-Control-Allow-Origin:*'}).then(res=>{
+    if (res.data.Status == 'Successfull'){
+      
+      this.setState({todayData:res.data.Data.todayData,tomorrowData:res.data.Data.tomorrowData,currentIslamicDate:res.data.Data.hijriDate,dataStatus:"Times Last Updated: "+this.getCurrentTime()})
+    
+    }
+    else{
+      console.log(res.data.Data)
+    }
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+  }
+
   componentDidMount(){
     this.interval = setInterval(() => this.updatePrayerList(), 1000);
     this.interval = setInterval(() => this.updateLanguage(), 1000);
+    this.getData()
   }
 
   render(){
@@ -490,7 +522,8 @@ export default class MainApp extends Component {
           </div>
         </div>
         <div id="SidePanel">
-          <img src={sidePanel} width="100%" height="100%" id="'Logo"></img>
+          <img src={sidePanel} width="100%" height="95%" id="'Logo"></img>
+          <div id='Status'>{this.state.dataStatus}</div>
         </div>
       </div>
     );

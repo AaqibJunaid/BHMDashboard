@@ -69,10 +69,10 @@
     "Jummah": "14:30:00",
     "Asr Start": "18:57:00",
     "Asr Jamat": "20:00:00",
-    "Maghrib Start": "21:56:00",
-    "Maghrib Jamat": "21:56:00",
-    "Isha Start": "22:51:00",
-    "Isha Jamat": "23:00:00"
+    "Maghrib Start": "20:56:00",
+    "Maghrib Jamat": "20:56:00",
+    "Isha Start": "21:51:00",
+    "Isha Jamat": "22:00:00"
   },
   {
     "Date": "06/06/2023",
@@ -80,7 +80,7 @@
     "Fajr Jamat": "01:45:00",
     "Sunrise": "04:30:00",
     "Zuhur Start": "13:17:00",
-    "Zuhur Jamat": "14:00:00",
+    "Zuhur Jamat": "13:18:00",
     "Jummah": "14:30:00",
     "Asr Start": "18:58:00",
     "Asr Jamat": "20:00:00",
