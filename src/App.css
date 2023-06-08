@@ -121,7 +121,7 @@ body {
 }
 #NextPrayerNameLabel{
   display: flex;
-  width: 8vw;
+  width: 7vw;
   height: 0%;
   color: azure;
   align-items: center;
