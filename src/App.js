@@ -25,7 +25,7 @@ export default class MainApp extends Component {
       dynamicSwitchMax:20,
       arabicSwitchMax:10,
       todayData:mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0],
-      tomorrowData:{},
+      tomorrowData:this.getTomorrowData(),
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
@@ -511,6 +511,10 @@ export default class MainApp extends Component {
       document.getElementById('NextPrayerTimeLabel').style.fontSize='7vh'
       this.setState({currentDynamicArea:'NextPrayer',dynamicSwitchCounter:0,switchToArabic:false,languageSwitchCouter:0})
     }
+
+    if(displayTime==undefined){
+      displayTime='Calculating'
+    }
     return displayTime
   }
 
@@ -523,13 +527,22 @@ export default class MainApp extends Component {
     }
   }
 
+  getTomorrowData(){
+    const today = new Date()
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    var tomorrowData=mosqueTimes.filter( element => element.Date === this.getTomorrowDate())[0]
+    
+    return tomorrowData
+  }
+
   handleApiError(err){
     if (this.state.lastKnownData==""){
       var todayData = mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0]
       const today = new Date()
       const tomorrow = new Date(today)
       tomorrow.setDate(tomorrow.getDate() + 1)
-      var tomorrowData=mosqueTimes.filter( element => element.Date === this.getTomorrowDate())[0]
+      var tomorrowData=this.getTomorrowData()
 
       this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
     }
