@@ -1,7 +1,5 @@
 import './App.css';
 import React, { Component} from 'react';
-import MainDashboardVideo from './Assets/MainVideoDashboard.mp4'
-import sidePanel from './Assets/SideBarWebsite.png'
 import mosqueTimes from './mosqueTimes.json'
 import axios from 'axios';
 import QRCode1 from './Assets/2.jpg'
