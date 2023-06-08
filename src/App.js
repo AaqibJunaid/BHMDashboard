@@ -4,6 +4,11 @@ import MainDashboardVideo from './Assets/MainVideoDashboard.mp4'
 import sidePanel from './Assets/SideBarWebsite.png'
 import mosqueTimes from './mosqueTimes.json'
 import axios from 'axios';
+import QRCode1 from './Assets/2.jpg'
+import QRCode2 from './Assets/3.jpg'
+import QRCode3 from './Assets/4.jpg'
+import logo from './Assets/1.jpg'
+
 
 export default class MainApp extends Component {
 
@@ -14,7 +19,7 @@ export default class MainApp extends Component {
       PrayerNames:['Fajr','Sunrise','Zuhur','Asr','Maghrib','Isha'],
       arabicPrayerNames:['فجر','شروق','زهور','عصر','مغرب','عشاء'],
       dynamicSwitchCounter:0,
-      currentDynamicArea:'ClockDate',
+      currentDynamicArea:'NextPrayer',
       switchToArabic:false,
       languageSwitchCouter:0,
       holdNextPrayer:false,
@@ -26,13 +31,15 @@ export default class MainApp extends Component {
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
-      errorMessage:''
+      errorMessage:'Build Version 1.20'
+
     }
   }
   
-  makePrayerList(){
+  makePrayerList(columnName){
 
-    var prayerLists = []
+    var prayerLists1 = []
+    var prayerLists2 = []
     
     this.state.PrayerNames.forEach(function(prayerName){
 
@@ -72,12 +79,33 @@ export default class MainApp extends Component {
           </div>
         )
       }
-
-      prayerLists.push(prayerItem)
-
+      
+      if (prayerName=='Fajr'){
+        prayerLists1.push(prayerItem)
+      }
+      else if(prayerName=='Sunrise'){
+        prayerLists2.push(prayerItem)
+      }
+      else if(prayerName == 'Zuhur'){
+        prayerLists1.push(prayerItem)
+      }
+      else if (prayerName == 'Asr'){
+        prayerLists2.push(prayerItem)
+      }
+      else if (prayerName == 'Maghrib'){
+        prayerLists1.push(prayerItem)
+      }
+      else{
+        prayerLists2.push(prayerItem)
+      }
     })
 
-    return prayerLists
+    if (columnName == 'Column1'){
+      return prayerLists1
+    }
+    else{
+      return prayerLists2
+    }
 
   }
 
@@ -96,21 +124,22 @@ export default class MainApp extends Component {
           break;
         }
       }
-      document.getElementById('NextPrayerNameLabel').style.fontSize= '2.5vw'  
+      // document.getElementById('NextPrayerNameLabel').style.fontSize= '2.5vw'  
       document.getElementById('NextPrayerNameLabel').innerText= arabicName
     }
     else{
       document.getElementById('NextPrayerNameLabel').innerText= nextPrayerName  
-      document.getElementById('NextPrayerNameLabel').style.fontSize= '2.85vw'  
+      // document.getElementById('NextPrayerNameLabel').style.fontSize= '2.85vw'  
     }
-    document.getElementById('NextPrayerTypeLabel').innerText=nextPrayerType +' in'
+    document.getElementById('NextPrayerTypeLabel').innerText=nextPrayerType +' in ...'
     document.getElementById('NextPrayerTimeLabel').innerText=displayTime
   }
 
-  getCurrentTime(){
+  getCurrentTime(withSeconds){
     var now=new Date()
     var hours;
     var minutes;
+    var seconds
     
     if(now.getHours()<10){
       hours='0'+now.getHours()
@@ -125,7 +154,20 @@ export default class MainApp extends Component {
     else{
       minutes = now.getMinutes()
     }
-    return hours+ ':' +minutes
+
+    if(now.getSeconds()<10){
+      seconds='0'+now.getSeconds()
+    }
+    else{
+      seconds = now.getSeconds()
+    }
+
+    if(withSeconds){
+      return hours+ ':' +minutes+':'+seconds
+    }
+    else{
+      return hours+ ':' +minutes
+    }
   }
 
    updatePrayerList(){
@@ -172,12 +214,11 @@ export default class MainApp extends Component {
       }      
       if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
         document.getElementById('Date').innerText=this.getLongDate()
-        document.getElementById('Date').style.fontSize='1.7vw'
+        document.getElementById('Date').style.fontSize='1.9vw'
       }
       else{
-        console.log("islamic date")
         document.getElementById('Date').innerText=this.state.currentIslamicDate
-        document.getElementById('Date').style.fontSize='1.3vw'
+        document.getElementById('Date').style.fontSize='1.5vw'
       }
     }
     else{
@@ -185,7 +226,7 @@ export default class MainApp extends Component {
         document.getElementById(prayer+'LabelText').innerText=prayer
       })
       document.getElementById('Date').innerText=this.getLongDate()
-      document.getElementById('Date').style.fontSize='1.7vw'
+      // document.getElementById('Date').style.fontSize='1.7vw'
     }
 
     if(this.state.languageSwitchCouter === this.state.arabicSwitchMax){
@@ -199,13 +240,13 @@ export default class MainApp extends Component {
 
   updateDynamicBox(){
     var todayTimes=this.state.todayData
-    if (this.state.currentDynamicArea === 'ClockDate'){
-      document.getElementById('NextPrayerArea').style.display='none'
+    // if (this.state.currentDynamicArea === 'ClockDate'){
+    //   document.getElementById('NextPrayerArea').style.display='none'
       document.getElementById('DateTimeArea').style.display='flex'
-      document.getElementById('Time').innerText=this.getCurrentTime()
-    }
-    else{
-      document.getElementById('DateTimeArea').style.display='none'
+      document.getElementById('Time').innerText=this.getCurrentTime(true)
+    // }
+    // else{
+    //   document.getElementById('DateTimeArea').style.display='none'
       document.getElementById('NextPrayerArea').style.display='flex'
       // if (holdNextPrayer == true){
       //   dynamicSwitchCounter = 0
@@ -222,21 +263,21 @@ export default class MainApp extends Component {
       // else{
         this.updateNextPrayer(this.getNextPrayerTime(todayTimes))
       // }
-    }
+    // }
 
-    this.setState({dynamicSwitchCounter:this.state.dynamicSwitchCounter+1})
+    // this.setState({dynamicSwitchCounter:this.state.dynamicSwitchCounter+1})
     //will force switch to prayer countdown if needed
     this.nextPrayerTimeDifference(this.getNextPrayerTime(todayTimes))
 
-    if(this.state.dynamicSwitchCounter===this.state.dynamicSwitchMax){
-      this.setState({dynamicSwitchCounter:0})
-      if(this.state.currentDynamicArea === 'ClockDate'){
-        this.setState({currentDynamicArea:'NextPrayer'})
-      }
-      else{
-        this.setState({currentDynamicArea:'ClockDate'})
-      }
-    }
+    // if(this.state.dynamicSwitchCounter===this.state.dynamicSwitchMax){
+    //   this.setState({dynamicSwitchCounter:0})
+    //   if(this.state.currentDynamicArea === 'ClockDate'){
+    //     this.setState({currentDynamicArea:'NextPrayer'})
+    //   }
+    //   else{
+    //     this.setState({currentDynamicArea:'ClockDate'})
+    //   }
+    // }
   }
   
   syncBottomPanel(){
@@ -460,13 +501,16 @@ export default class MainApp extends Component {
     }
 
     if (hours>0){
-      displayTime= hours + ':' + minutes + ':' + seconds;
+      displayTime= hours + 'h ' + minutes + 'm ' + seconds +'s';
+      document.getElementById('NextPrayerTimeLabel').style.fontSize="2.7vw"
     }
-    else if(hours==0 &&minutes>=1)(
-      displayTime = minutes + ':' + seconds
-    )
+    else if(hours==0 &&minutes>=1){
+      displayTime = minutes + 'm ' + seconds+'s'
+      document.getElementById('NextPrayerTimeLabel').style.fontSize="6vh"
+    }
     else if(seconds>=0){
       displayTime = seconds+'s';
+      document.getElementById('NextPrayerTimeLabel').style.fontSize='7vh'
       this.setState({currentDynamicArea:'NextPrayer',dynamicSwitchCounter:0,switchToArabic:false,languageSwitchCouter:0})
     }
     return displayTime
@@ -474,12 +518,10 @@ export default class MainApp extends Component {
 
   handleError(show){
     if(show){
-      document.getElementById('Logo').style.height='92.5%'
       document.getElementById('Error').style.display='flex'
     }
     else{
-    document.getElementById('Logo').style.height='95%'
-    document.getElementById('Error').style.display='none'
+    this.setState({errorMessage:'Build Version 1.20'})
     }
   }
 
@@ -533,7 +575,7 @@ export default class MainApp extends Component {
   callAPI = async () => {
     await axios.get('https://mosquerestapi.glitch.me/',{'headers':'Access-Control-Allow-Origin:*'}).then(res=>{
     if (res.data.Status == 'Successfull'){
-      this.setState({todayData:res.data.Data.todayData,tomorrowData:res.data.Data.tomorrowData,currentIslamicDate:res.data.Data.hijriDate,dataStatus:"Data Refreshed at "+this.getCurrentTime()})
+      this.setState({todayData:res.data.Data.todayData,tomorrowData:res.data.Data.tomorrowData,currentIslamicDate:res.data.Data.hijriDate,dataStatus:"Data Refreshed at "+this.getCurrentTime(false)})
       this.setState({lastKnownData:{'lastRefreshed':this.getTodaysDate(),'todayData':this.state.todayData,'tomorrowData':res.data.Data.tomorrowData,'hijriDate':res.data.Data.hijriDate}})
       this.handleError(false)
     }
@@ -548,11 +590,12 @@ export default class MainApp extends Component {
   }
 
   getData(){
-    var minute = this.getCurrentTime()
+    var minute = this.getCurrentTime(false)
     minute = minute.substring(3,5)
 
     if (minute=="00" || minute=="30"){
       this.callAPI()
+      this.setState({errorMessage:'Build Version 1.20'})
     }
     else if(this.state.dataStatus=='Running on Backup Data' || this.state.dataStatus=='Data Failed to Refresh'){
       this.callAPI()
@@ -560,6 +603,8 @@ export default class MainApp extends Component {
   }
 
   componentDidMount(){
+    // this.updatePrayerList()
+    // this.syncBottomPanel()
     this.interval = setInterval(() => this.updatePrayerList(), 1000);
     this.interval = setInterval(() => this.syncBottomPanel(), 1000);
     this.callAPI()
@@ -570,14 +615,39 @@ export default class MainApp extends Component {
       return (
         <div id="Main">
           <div id="MainPanel">
-            <div id="Top">
-             <video id='MainVideo' width="100%" height="99.5%" autoPlay="true" loop="true" muted="true">
-                <source src={MainDashboardVideo} type="video/mp4" />
-            </video>
-            {/* <iframe id='MainVideo'width="100%" height="99.5%" src="https://www.youtube.com/embed/fVZU02czjas?&autoplay=1&controls=0&loop=1&mute=1&playlist=fVZU02czjas" frameBorder="0" allowFullScreen></iframe> */}
-           </div>
-          <div id="Bottom">
+              <div id="Top">
+              <div id='MainVideo'><iframe src="https://player.vimeo.com/video/834354138?h=0edd8f4021&autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>
+              <div id='VideoBorder'></div>
+            </div>
+            <div id="Bottom">
+              <div id="BrandingArea">
+                <img id ="logo" src={logo}></img>
+                <div id="QRCodes">
+                  <img className='QRCode' src={QRCode1}></img>
+                  <img className='QRCode' src={QRCode2}></img>
+                  <img className='QRCode' src={QRCode3}></img>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="SidePanel">
             <div id="PrayerList">
+              <div id='Prayers'>
+                < div id='Column1' className='PrayerColumn'>
+                  {this.makePrayerList('Column1')}
+                </div>
+                <div id='Column2' className='PrayerColumn'>
+                  {this.makePrayerList('Column2')}
+                </div>
+              </div>
+              <div id="DateTimeArea">
+                <div id='CurrentDate'>
+                  <p id="Date"></p>
+                </div>
+                <div id='CurrentTime'>
+                  <p id="Time"></p>
+                </div>
+              </div>
               <div id="NextPrayerArea">
                 <div id='NextPrayerName'>
                   <div id="NextPrayer-Name">
@@ -591,23 +661,12 @@ export default class MainApp extends Component {
                   <p id="NextPrayerTimeLabel"></p>
                 </div>
               </div>
-              <div id="DateTimeArea">
-                <div id='CurrentDate'>
-                  <p id="Date"></p>
-                </div>
-                <div id='CurrentTime'>
-                  <p id="Time"></p>
-                </div>
+              <div id='Alerts'>
+                <div id='Status'>{this.state.dataStatus}</div>
+                <div id='Error'>{this.state.errorMessage}</div>
               </div>
-              {this.makePrayerList()}
             </div>
           </div>
-        </div>
-        <div id="SidePanel">
-          <img src={sidePanel} width="100%" height="92.5%" id="Logo"></img>
-          <div id='Status'>{this.state.dataStatus}</div>
-          <div id='Error'>{this.state.errorMessage}</div>
-        </div>
       </div>
     );
   }
