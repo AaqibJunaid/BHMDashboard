@@ -4,6 +4,8 @@ body {
 }
 #Main{
   display: flex;
+  height: 100%;
+  width:100%
 }
 
 #Status{
@@ -36,15 +38,24 @@ body {
   /* font-weight: 600; */
 }
 #MainPanel{
-  height: 100vh;
-  width: 67vw;
+  height: 100%;
+  width: 64%;
 }
 #Top{
   display: flex;
-  height: 73vh;
+  height: 70vh;
   width: 100%;
   background-color: black;
   justify-content: center;
+  flex-direction: column;
+}
+#Bottom{
+  height: 30vh;
+  width: 100%;
+  background-color: #222222;
+  align-items: center;
+  justify-content: right;
+  display: flex;
   flex-direction: column;
 }
 #MainVideo{
@@ -60,8 +71,8 @@ body {
   background-color: white;
 }
 #SidePanel{
-  height: 100vh;
-  width: 33vw;
+  height: 100%;
+  width: 36%;
   background-color:#222222;
   align-items: center;
   display: flex;
@@ -81,8 +92,8 @@ body {
 }
 #NextPrayerArea{
   display: flex;
-  width: 30vw;
-  height: 12vh;
+  width:32.4vw;
+  height:11.4vh;
   background-color: darkslategray;
   flex-direction: row;
   align-items: center;
@@ -129,9 +140,9 @@ body {
   height: 100%;
   color: azure;
   align-items: center;
-  font-size: 2.3vw;
+  font-size: 2.25vw;
   font-family: sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   justify-content: center;
 }
 #NextPrayerTypeLabel{
@@ -152,15 +163,15 @@ body {
   color: ghostwhite;
   font-size: 4vw;
   font-family: sans-serif;
-  font-weight: 500;
+  font-weight: lighter;
   align-items: center;
   justify-content: center;
   padding-top: 2%;
 }
 #DateTimeArea{
   display: flex;
-  width:30vw;
-  height:12vh;
+  width:32.4vw;
+  height:11.4vh;
   background-color:darkslategray;
   flex-direction: row;
   align-items: center;
@@ -183,7 +194,7 @@ body {
   color: ghostwhite;
   font-size: 5.9vh;
   font-family: sans-serif;
-  font-weight: 500;
+  font-weight: lighter;
   justify-content: center;
   padding-top: 2%;
 }
@@ -203,12 +214,12 @@ body {
   align-items: center;
   font-size: 2vw;
   font-family: sans-serif;
-  font-weight: normal;
+  font-weight: 500;
   justify-content: center;
 }
 .PrayerTime{
-  width: 14vw;
-  height: 20.3vh;
+  width: 15.4vw;
+  height: 19.8vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -286,15 +297,6 @@ body {
   justify-content: center;
   color: azure;
 }
-#Bottom{
-  height: 29vh;
-  width: 100%;
-  background-color: #222222;
-  align-items: center;
-  justify-content: right;
-  display: flex;
-  flex-direction: column;
-}
 #Prayers{
   display: flex;
   height: 68vh;
@@ -305,8 +307,8 @@ body {
   justify-content: space-evenly;
   display: flex;
   flex-direction: column;
-  height: 101%;
-  width: 14vw;
+  height: 100%;
+  width: 15vw;
   align-items: center;
 }
 #BrandingArea{
@@ -315,6 +317,7 @@ body {
   width: 100%;
   flex-direction: row;
   background-color: #222222;
+  padding-top: 2%;
 }
 #Alerts{
   display: flex;
@@ -358,4 +361,5 @@ body {
   height: 28vh;
   justify-content: space-around;
   width: 30vw;
+  align-items: center;
 }

@@ -29,7 +29,8 @@ export default class MainApp extends Component {
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
-      errorMessage:'Build Version 1.30'
+      errorMessage:'© Blackhall Mosque V1.4',
+      buildVersion: '© Blackhall Mosque V1.4'
 
     }
   }
@@ -503,18 +504,22 @@ export default class MainApp extends Component {
 
     if (hours>0){
       displayTime= hours + 'h ' + minutes + 'm ' + seconds +'s';
-      document.getElementById('NextPrayerTimeLabel').style.fontSize="2.5vw"
-      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="0.5vw"
+      document.getElementById('NextPrayerTimeLabel').style.fontSize="2.8vw"
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="0vw"
+      document.getElementById('NextPrayerTimeLabel').style.transform="scaleY(1.09)";
+
     }
     else if(hours==0 &&minutes>=1){
       displayTime = minutes + 'm ' + seconds+'s'
       document.getElementById('NextPrayerTimeLabel').style.fontSize="6vh"
-      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1vw"
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.5vw"
+      document.getElementById('NextPrayerTimeLabel').style.transform="scaleY(1)";
     }
     else if(seconds>=0){
       displayTime = seconds+'s';
       document.getElementById('NextPrayerTimeLabel').style.fontSize='7vh'
       document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.5vw"
+      document.getElementById('NextPrayerTimeLabel').style.transform="scaleY(1)";
       this.setState({currentDynamicArea:'NextPrayer',dynamicSwitchCounter:0,switchToArabic:false,languageSwitchCouter:0})
     }
 
@@ -529,7 +534,7 @@ export default class MainApp extends Component {
       document.getElementById('Error').style.display='flex'
     }
     else{
-    this.setState({errorMessage:'Build Version 1.30'})
+    this.setState({errorMessage:this.state.buildVersion})
     }
   }
 
@@ -612,7 +617,7 @@ export default class MainApp extends Component {
 
     if (minute=="00" || minute=="30"){
       this.callAPI()
-      this.setState({errorMessage:'Build Version 1.30'})
+      this.setState({errorMessage:this.state.buildVersion})
     }
     else if(this.state.dataStatus=='Running on Backup Data' || this.state.dataStatus=='Data Failed to Refresh'){
       this.callAPI()
