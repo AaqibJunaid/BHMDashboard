@@ -503,8 +503,8 @@ export default class MainApp extends Component {
 
     if (hours>0){
       displayTime= hours + 'h ' + minutes + 'm ' + seconds +'s';
-      document.getElementById('NextPrayerTimeLabel').style.fontSize="2.7vw"
-      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.2vw"
+      document.getElementById('NextPrayerTimeLabel').style.fontSize="2.5vw"
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="0.5vw"
     }
     else if(hours==0 &&minutes>=1){
       displayTime = minutes + 'm ' + seconds+'s'
