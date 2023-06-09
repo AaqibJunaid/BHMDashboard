@@ -17,7 +17,7 @@ export default class MainApp extends Component {
       PrayerNames:['Fajr','Sunrise','Zuhur','Asr','Maghrib','Isha'],
       arabicPrayerNames:['فجر','شروق','زهور','عصر','مغرب','عشاء'],
       dynamicSwitchCounter:0,
-      currentDynamicArea:'NextPrayer',
+      currentDynamicArea:'ClockDate',
       switchToArabic:false,
       languageSwitchCouter:0,
       holdNextPrayer:false,
@@ -122,14 +122,14 @@ export default class MainApp extends Component {
           break;
         }
       }
-      // document.getElementById('NextPrayerNameLabel').style.fontSize= '2.5vw'  
-      document.getElementById('NextPrayerNameLabel').innerText= arabicName
+      document.getElementById('NextPrayerNameLabel').style.paddingBottom= '5%'  
+      document.getElementById('NextPrayerNameLabel').innerText= arabicName +'\n'+nextPrayerType +' in...'
     }
     else{
-      document.getElementById('NextPrayerNameLabel').innerText= nextPrayerName  
-      // document.getElementById('NextPrayerNameLabel').style.fontSize= '2.85vw'  
+      document.getElementById('NextPrayerNameLabel').innerText= nextPrayerName  +'\n'+nextPrayerType +' in...'
+      document.getElementById('NextPrayerNameLabel').style.paddingBottom= '0%' 
     }
-    document.getElementById('NextPrayerTypeLabel').innerText=nextPrayerType +' in ...'
+    // document.getElementById('NextPrayerTypeLabel').innerText=nextPrayerType +' in'
     document.getElementById('NextPrayerTimeLabel').innerText=displayTime
   }
 
@@ -212,11 +212,13 @@ export default class MainApp extends Component {
       }      
       if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
         document.getElementById('Date').innerText=this.getLongDate()
-        document.getElementById('Date').style.fontSize='1.9vw'
+        document.getElementById('Date').style.fontSize='2vw'
+        document.getElementById('Date').style.paddingLeft='0%'
       }
       else{
         document.getElementById('Date').innerText=this.state.currentIslamicDate
-        document.getElementById('Date').style.fontSize='1.5vw'
+        document.getElementById('Date').style.fontSize='1.6vw'
+        document.getElementById('Date').style.paddingLeft='8%'
       }
     }
     else{
@@ -224,7 +226,8 @@ export default class MainApp extends Component {
         document.getElementById(prayer+'LabelText').innerText=prayer
       })
       document.getElementById('Date').innerText=this.getLongDate()
-      // document.getElementById('Date').style.fontSize='1.7vw'
+      document.getElementById('Date').style.fontSize='2vw'
+      document.getElementById('Date').style.paddingLeft='0%'
     }
 
     if(this.state.languageSwitchCouter === this.state.arabicSwitchMax){
@@ -501,14 +504,17 @@ export default class MainApp extends Component {
     if (hours>0){
       displayTime= hours + 'h ' + minutes + 'm ' + seconds +'s';
       document.getElementById('NextPrayerTimeLabel').style.fontSize="2.7vw"
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.2vw"
     }
     else if(hours==0 &&minutes>=1){
       displayTime = minutes + 'm ' + seconds+'s'
       document.getElementById('NextPrayerTimeLabel').style.fontSize="6vh"
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="2vw"
     }
     else if(seconds>=0){
       displayTime = seconds+'s';
       document.getElementById('NextPrayerTimeLabel').style.fontSize='7vh'
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="2.5vw"
       this.setState({currentDynamicArea:'NextPrayer',dynamicSwitchCounter:0,switchToArabic:false,languageSwitchCouter:0})
     }
 
@@ -651,25 +657,27 @@ export default class MainApp extends Component {
                   {this.makePrayerList('Column2')}
                 </div>
               </div>
-              <div id="DateTimeArea">
-                <div id='CurrentDate'>
-                  <p id="Date"></p>
-                </div>
-                <div id='CurrentTime'>
-                  <p id="Time"></p>
-                </div>
-              </div>
-              <div id="NextPrayerArea">
-                <div id='NextPrayerName'>
-                  <div id="NextPrayer-Name">
-                    <p id="NextPrayerNameLabel"></p>
+              <div id="InformationPanel">
+                <div id="DateTimeArea">
+                  <div id='CurrentDate'>
+                    <p id="Date"></p>
                   </div>
-                  <div id="NextPrayer-Type">
-                    <p id="NextPrayerTypeLabel"></p>
+                  <div id='CurrentTime'>
+                    <p id="Time"></p>
                   </div>
                 </div>
-                <div id='NextPrayerTime'>
-                  <p id="NextPrayerTimeLabel"></p>
+                <div id="NextPrayerArea">
+                  <div id='NextPrayerName'>
+                    <div id="NextPrayer-Name">
+                      <p id="NextPrayerNameLabel"></p>
+                    </div>
+                    {/* <div id="NextPrayer-Type">
+                      <p id="NextPrayerTypeLabel"></p>
+                    </div> */}
+                  </div>
+                  <div id='NextPrayerTime'>
+                    <p id="NextPrayerTimeLabel"></p>
+                  </div>
                 </div>
               </div>
               <div id='Alerts'>

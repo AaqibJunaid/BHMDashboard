@@ -79,7 +79,7 @@ body {
 #NextPrayerArea{
   display: flex;
   width: 30vw;
-  height: 11.9vh;
+  height: 12vh;
   background-color: darkslategray;
   flex-direction: row;
   align-items: center;
@@ -91,16 +91,15 @@ body {
 }
 #NextPrayerName{
   display: flex;
-  height: 70%;
-  width: 45%;
+  height: 100%;
+  width: 17vw;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding-top: 0.5vh;
 }
 #NextPrayer-Name{
   display: flex;
-  height: 60%;
+  height: 10vh;
   width: 100%;
   justify-content: center;
   flex-direction: column;
@@ -115,46 +114,49 @@ body {
 #NextPrayerTime{
   display: flex;
   height: 100%;
-  width: 65%;
+  width: 20vw;
   justify-content: center;
   align-items: center;
+  padding-right: 2%;
 }
 #NextPrayerNameLabel{
   display: flex;
-  width: 7vw;
-  height: 0%;
+  width: 100%;
+  height: 100%;
   color: azure;
   align-items: center;
-  font-size: 2.6vw;
+  font-size: 2.3vw;
   font-family: sans-serif;
-  font-weight: 800;
+  font-weight: 400;
   justify-content: center;
 }
 #NextPrayerTypeLabel{
-  display: flex;
+  display: none;
   width: 100%;
-  height: 2%;
+  height: 100%;
   color: azure;
   align-items: center;
   font-size: 2vw;
   font-family: sans-serif;
   font-weight: lighter;
   justify-content: center;
+  padding-left: 9%;
 }
 #NextPrayerTimeLabel{
   display: flex;
   width: 100%;
-  color: azure;
+  color: ghostwhite;
   font-size: 4vw;
   font-family: sans-serif;
   font-weight: 500;
   align-items: center;
   justify-content: center;
+  padding-top: 2%;
 }
 #DateTimeArea{
   display: flex;
   width:30vw;
-  height:11.9vh;
+  height:12vh;
   background-color:darkslategray;
   flex-direction: row;
   align-items: center;
@@ -167,7 +169,7 @@ body {
 #CurrentTime{
   display: flex;
   height: 100%;
-  width: 55%;
+  width: 15vw;
   justify-content: center;
   align-items: center;
 }
@@ -175,15 +177,16 @@ body {
   display: flex;
   width: 100%;
   color: ghostwhite;
-  font-size: 5.8vh;
+  font-size: 5.9vh;
   font-family: sans-serif;
   font-weight: 500;
   justify-content: center;
+  padding-top: 2%;
 }
 #CurrentDate{
   display: flex;
   height: 100%;
-  width: 50%;
+  width: 14.6vw;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -194,14 +197,14 @@ body {
   height: 0%;
   color: azure;
   align-items: center;
-  font-size: 1.9vw;
+  font-size: 2vw;
   font-family: sans-serif;
   font-weight: normal;
   justify-content: center;
 }
 .PrayerTime{
   width: 14vw;
-  height: 20vh;
+  height: 20.3vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -214,8 +217,8 @@ body {
 .PrayerBody{
   display: flex;
   flex-direction: column;
-  height: 90%;
-  width:100%;
+  height: 95%;
+  width: 105%;
   align-items: center;
 }
 .PrayerName{
@@ -227,8 +230,8 @@ body {
 }
 .PrayerNameText{
   font-family: system-ui;
-  font-weight: 500;
-  font-size: 2.3vw;
+  font-weight: 300;
+  font-size: 4.5vh;
   height: 100%;
   width: 100%;
   display: flex;
@@ -239,14 +242,14 @@ body {
 }
 .PrayerStart{
   display: flex;
-  height: 44%;
+  height: 47%;
   width: 100%;
   text-align: center;
   justify-content: center;
 }
 .PrayerStartText{
   font-family: sans-serif;
-  font-size: 3.8vw;
+  font-size: 6vh;
   height: 100%;
   width: 100%;
   display: flex;
@@ -254,18 +257,18 @@ body {
   align-items: center;
   justify-content: center;
   color: ghostwhite;
-  overflow: hidden;
+  font-weight: 500;
 }
 .PrayerJamat{
   background-color: purple;
   display: flex;
-  height: 27%;
-  width: 65%;
+  height: 30%;
+  width: 95%;
   text-align: center;
   justify-content: center;
   border-style: solid;
   border-color: white;
-  border-radius: 13px;
+  border-radius: 11px;
   border-width: thin;
 }
 .PrayerJamatText{
@@ -290,15 +293,15 @@ body {
 }
 #Prayers{
   display: flex;
-  height: 67vh;
-  width: 99%;
+  height: 68vh;
+  width: 98%;
   justify-content: space-evenly;
 }
 .PrayerColumn{
   justify-content: space-evenly;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 101%;
   width: 14vw;
   align-items: center;
 }
@@ -311,7 +314,7 @@ body {
 }
 #Alerts{
   display: flex;
-  height: 1vh;
+  height: 5vh;
   width: 100%;
   flex-direction: row;
   justify-content: space-around;
@@ -345,4 +348,11 @@ body {
   background-color: #222222;
   align-items: center;
   flex-direction: row;
+}
+#InformationPanel{
+  display: flex;
+  flex-direction: column;
+  height: 28vh;
+  justify-content: space-around;
+  width: 30vw;
 }
