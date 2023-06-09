@@ -509,12 +509,12 @@ export default class MainApp extends Component {
     else if(hours==0 &&minutes>=1){
       displayTime = minutes + 'm ' + seconds+'s'
       document.getElementById('NextPrayerTimeLabel').style.fontSize="6vh"
-      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="2vw"
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1vw"
     }
     else if(seconds>=0){
       displayTime = seconds+'s';
       document.getElementById('NextPrayerTimeLabel').style.fontSize='7vh'
-      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="2.5vw"
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.5vw"
       this.setState({currentDynamicArea:'NextPrayer',dynamicSwitchCounter:0,switchToArabic:false,languageSwitchCouter:0})
     }
 

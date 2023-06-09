@@ -62,7 +62,7 @@ body {
 #SidePanel{
   height: 100vh;
   width: 33vw;
-  /* background-color:white; */
+  background-color:#222222;
   align-items: center;
   display: flex;
   justify-content: space-evenly;
