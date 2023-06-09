@@ -29,7 +29,7 @@ export default class MainApp extends Component {
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
-      errorMessage:'Build Version 1.20'
+      errorMessage:'Build Version 1.30'
 
     }
   }
@@ -122,7 +122,7 @@ export default class MainApp extends Component {
           break;
         }
       }
-      document.getElementById('NextPrayerNameLabel').style.paddingBottom= '5%'  
+      document.getElementById('NextPrayerNameLabel').style.paddingBottom= '1%'  
       document.getElementById('NextPrayerNameLabel').innerText= arabicName +'\n'+nextPrayerType +' in...'
     }
     else{
@@ -529,7 +529,7 @@ export default class MainApp extends Component {
       document.getElementById('Error').style.display='flex'
     }
     else{
-    this.setState({errorMessage:'Build Version 1.20'})
+    this.setState({errorMessage:'Build Version 1.30'})
     }
   }
 
@@ -612,7 +612,7 @@ export default class MainApp extends Component {
 
     if (minute=="00" || minute=="30"){
       this.callAPI()
-      this.setState({errorMessage:'Build Version 1.20'})
+      this.setState({errorMessage:'Build Version 1.30'})
     }
     else if(this.state.dataStatus=='Running on Backup Data' || this.state.dataStatus=='Data Failed to Refresh'){
       this.callAPI()

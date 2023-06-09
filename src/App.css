@@ -99,6 +99,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding-bottom: 0.5vh;
 }
 #NextPrayer-Name{
   display: flex;
