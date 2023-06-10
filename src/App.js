@@ -124,11 +124,20 @@ export default class MainApp extends Component {
         }
       }
       document.getElementById('NextPrayerNameLabel').style.paddingBottom= '1%'  
-      document.getElementById('NextPrayerNameLabel').innerText= arabicName +'\n'+nextPrayerType +' in...'
+      document.getElementById('NextPrayerNameLabel').style.paddingTop= '0%'
+      document.getElementById('NextPrayerNameLabel').style.paddingLeft= '10%' 
+      document.getElementById('NextPrayerNameLabel').style.justifyContent= 'unset' 
+
+      document.getElementById('NextPrayerNameLabel').innerText= arabicName +'\n'+nextPrayerType +' in ...'
     }
     else{
-      document.getElementById('NextPrayerNameLabel').innerText= nextPrayerName  +'\n'+nextPrayerType +' in...'
+      document.getElementById('NextPrayerNameLabel').innerText= nextPrayerName  +'\n'+nextPrayerType +' in ...'
       document.getElementById('NextPrayerNameLabel').style.paddingBottom= '0%' 
+      document.getElementById('NextPrayerNameLabel').style.paddingTop= '2%' 
+      document.getElementById('NextPrayerNameLabel').style.paddingLeft= '0%' 
+      document.getElementById('NextPrayerNameLabel').style.justifyContent= 'center' 
+
+
     }
     // document.getElementById('NextPrayerTypeLabel').innerText=nextPrayerType +' in'
     document.getElementById('NextPrayerTimeLabel').innerText=displayTime
@@ -214,12 +223,14 @@ export default class MainApp extends Component {
       if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
         document.getElementById('Date').innerText=this.getLongDate()
         document.getElementById('Date').style.fontSize='2vw'
-        document.getElementById('Date').style.paddingLeft='0%'
+        document.getElementById('Date').style.paddingLeft='3%'
+        document.getElementById('Date').style.transform="scaleY(1)"
       }
       else{
         document.getElementById('Date').innerText=this.state.currentIslamicDate
-        document.getElementById('Date').style.fontSize='1.6vw'
-        document.getElementById('Date').style.paddingLeft='8%'
+        document.getElementById('Date').style.fontSize='1.7vw'
+        document.getElementById('Date').style.transform="scaleY(1.15)"
+        document.getElementById('Date').style.paddingLeft='1%'
       }
     }
     else{
@@ -228,7 +239,8 @@ export default class MainApp extends Component {
       })
       document.getElementById('Date').innerText=this.getLongDate()
       document.getElementById('Date').style.fontSize='2vw'
-      document.getElementById('Date').style.paddingLeft='0%'
+      document.getElementById('Date').style.paddingLeft='3%'
+      document.getElementById('Date').style.transform="scaleY(1)"
     }
 
     if(this.state.languageSwitchCouter === this.state.arabicSwitchMax){
