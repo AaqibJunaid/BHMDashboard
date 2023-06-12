@@ -29,8 +29,8 @@ export default class MainApp extends Component {
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
-      errorMessage:'© Blackhall Mosque V1.4',
-      buildVersion: '© Blackhall Mosque V1.4'
+      errorMessage:'© Blackhall Mosque V1.5',
+      buildVersion: '© Blackhall Mosque V1.5'
 
     }
   }
@@ -650,7 +650,7 @@ export default class MainApp extends Component {
         <div id="Main">
           <div id="MainPanel">
               <div id="Top">
-              <div id='MainVideo'><iframe src="https://player.vimeo.com/video/834354138?h=0edd8f4021&autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>
+              <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?h=0edd8f4021&autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>
               <div id='VideoBorder'></div>
             </div>
             <div id="Bottom">
