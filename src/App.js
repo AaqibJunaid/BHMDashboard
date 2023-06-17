@@ -1,11 +1,9 @@
 import './App.css';
 import React, { Component} from 'react';
-import mosqueTimes from './mosqueTimes.json'
 import axios from 'axios';
-import QRCode1 from './Assets/2.jpg'
-import QRCode2 from './Assets/3.jpg'
-import QRCode3 from './Assets/4.jpg'
-import logo from './Assets/1.jpg'
+import mosqueTimes from './mosqueTimes.json'
+import logo from './Assets/Logo.jpg'
+import PrayerView from './PrayerView/PrayerView';
 
 
 export default class MainApp extends Component {
@@ -16,22 +14,29 @@ export default class MainApp extends Component {
       count:1,
       PrayerNames:['Fajr','Sunrise','Zuhur','Asr','Maghrib','Isha'],
       arabicPrayerNames:['فجر','شروق','زهور','عصر','مغرب','عشاء'],
-      dynamicSwitchCounter:0,
-      currentDynamicArea:'ClockDate',
+      prayers:{'Fajr':'فجر','Sunrise':'شروق','Zuhur':'زهور','Asr':'عصر','Maghrib':'مغرب','Isha':'عشاء'},
+      dynamicHoldCounter:0,
+      currentDynamicArea:'Main',
       switchToArabic:false,
       languageSwitchCouter:0,
       holdNextPrayer:false,
       holdCounter:0,
-      dynamicSwitchMax:20,
+      dynamicHoldMax:60,
       arabicSwitchMax:10,
+      qrUpdateTimer:0,
+      qrUpdateMax:10,
       todayData:mosqueTimes.filter( element => element.Date === this.getTodaysDate())[0],
       tomorrowData:this.getTomorrowData(),
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
-      errorMessage:'© Blackhall Mosque V1.5',
-      buildVersion: '© Blackhall Mosque V1.5'
-
+      errorMessage:'© Blackhall Mosque Version 1.6',
+      buildVersion: '© Blackhall Mosque Version 1.6',
+      nextPrayer:{},
+      countdown:'',
+      allQRCodes:[],
+      QRCodes : [],
+      firstQRCode:0
     }
   }
   
@@ -108,11 +113,45 @@ export default class MainApp extends Component {
 
   }
 
+  manageView(){
+
+    if (this.state.currentDynamicArea=='Main'){
+      document.getElementById('MainView').style.display='flex'
+      document.getElementById('PrayerView').style.display='none'
+      this.updatePrayerList()
+      this.syncBottomPanel()
+
+      if(this.state.qrUpdateTimer==this.state.qrUpdateMax){
+        this.updateQRCodes()
+        this.setState({qrUpdateTimer:0})
+      }
+      else{
+        this.setState({qrUpdateTimer:this.state.qrUpdateTimer+1})
+      }
+    }
+    else{
+    document.getElementById('MainView').style.display='none'
+    document.getElementById('PrayerView').style.display='flex'
+    var todayTimes=this.state.todayData
+    var nextPrayerTime = this.getNextPrayerTime(todayTimes)
+    var counter = this.nextPrayerTimeDifference(nextPrayerTime)
+    this.setState({nextPrayer:{'EnglishName':nextPrayerTime.Name,'PrayerType':nextPrayerTime.Type,'Difference':counter}})
+    console.log(counter)
+    if(counter == '00s'){
+      this.setState({currentDynamicArea:'Main'})
+    }
+
+    }
+  }
+
   updateNextPrayer(nextPrayer){
     var nextPrayerName = nextPrayer.Name
     var nextPrayerType = nextPrayer.Type
  
     var displayTime = this.nextPrayerTimeDifference(nextPrayer)
+
+    this.setState({nextPrayer:{'EnglishName':nextPrayerName,'ArabicName':this.state.prayers[nextPrayerName],'PrayerType':nextPrayerType,'Difference':displayTime}})
+
 
     if(this.state.switchToArabic){
       var arabicName;
@@ -263,11 +302,11 @@ export default class MainApp extends Component {
     //   document.getElementById('DateTimeArea').style.display='none'
       document.getElementById('NextPrayerArea').style.display='flex'
       // if (holdNextPrayer == true){
-      //   dynamicSwitchCounter = 0
+      //   dynamicHoldCounter = 0
       //   document.getElementById('NextPrayerTimeLabel').innerText='Progress'
       //   if (holdCounter == 15){
       //     holdNextPrayer = false
-      //     dynamicSwitchCounter=9
+      //     dynamicHoldCounter=9
       //     holdCounter=0
       //   }
       //   else{
@@ -279,12 +318,12 @@ export default class MainApp extends Component {
       // }
     // }
 
-    // this.setState({dynamicSwitchCounter:this.state.dynamicSwitchCounter+1})
+    // this.setState({dynamicHoldCounter:this.state.dynamicHoldCounter+1})
     //will force switch to prayer countdown if needed
     this.nextPrayerTimeDifference(this.getNextPrayerTime(todayTimes))
 
-    // if(this.state.dynamicSwitchCounter===this.state.dynamicSwitchMax){
-    //   this.setState({dynamicSwitchCounter:0})
+    // if(this.state.dynamicHoldCounter===this.state.dynamicSwitchMax){
+    //   this.setState({dynamicHoldCounter:0})
     //   if(this.state.currentDynamicArea === 'ClockDate'){
     //     this.setState({currentDynamicArea:'NextPrayer'})
     //   }
@@ -532,7 +571,7 @@ export default class MainApp extends Component {
       document.getElementById('NextPrayerTimeLabel').style.fontSize='7vh'
       document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.5vw"
       document.getElementById('NextPrayerTimeLabel').style.transform="scaleY(1)";
-      this.setState({currentDynamicArea:'NextPrayer',dynamicSwitchCounter:0,switchToArabic:false,languageSwitchCouter:0})
+      this.setState({currentDynamicArea:'Countdown',dynamicHoldCounter:0,switchToArabic:false,languageSwitchCouter:0})
     }
 
     if(displayTime==undefined){
@@ -636,11 +675,53 @@ export default class MainApp extends Component {
     }
   }
 
+  getImages() {
+    let images = {};
+    var r = require.context('./Assets/QR Codes', false, /\.(png|jpe?g|svg)$/)
+    r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+    let codes = Object.values(images)
+    this.setState({allQRCodes:codes,firstQRCode:0,QRCodes:[codes[0],codes[1],codes[2]]})
+  }
+
+  updateQRCodes(){
+    var displayCodes = []
+
+    for (var i = this.state.firstQRCode+1;i < this.state.allQRCodes.length;i++){
+      if (displayCodes.length == 3){
+        break;
+      }
+      else{
+        displayCodes.push(this.state.allQRCodes[i])
+      }
+    }
+
+    if(displayCodes.length<4){
+      for (var i = 0; i<this.state.allQRCodes.length;i++){
+        if (displayCodes.length == 3){
+          break;
+        }
+        else{
+          displayCodes.push(this.state.allQRCodes[i])
+        }
+      }
+    }
+
+    if (this.state.firstQRCode == this.state.allQRCodes.length-1){
+      this.setState({firstQRCode:0})
+    }
+    else{
+      this.setState({firstQRCode:this.state.firstQRCode+1})
+    }
+    
+    this.setState({QRCodes:displayCodes})
+
+  }
+
   componentDidMount(){
     // this.updatePrayerList()
     // this.syncBottomPanel()
-    this.interval = setInterval(() => this.updatePrayerList(), 1000);
-    this.interval = setInterval(() => this.syncBottomPanel(), 1000);
+    this.getImages()
+    this.interval = setInterval(() => this.manageView(), 1000);
     this.callAPI()
     this.interval = setInterval(() => this.getData(), 30000);
   }
@@ -648,62 +729,62 @@ export default class MainApp extends Component {
   render(){
       return (
         <div id="Main">
-          <div id="MainPanel">
-              <div id="Top">
-              <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?h=0edd8f4021&autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>
-              <div id='VideoBorder'></div>
-            </div>
-            <div id="Bottom">
-              <div id="BrandingArea">
-                <img id ="logo" src={logo}></img>
-                <div id="QRCodes">
-                  <img className='QRCode' src={QRCode1}></img>
-                  <img className='QRCode' src={QRCode2}></img>
-                  <img className='QRCode' src={QRCode3}></img>
+          <div id="MainView">
+            <div id="MainPanel">
+                <div id="Top">
+                <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>
+                <div id='VideoBorder'></div>
+              </div>
+              <div id="Bottom">
+                <div id="BrandingArea">
+                  <img id ="logo" src={logo}></img>
+                  <div id="QRCodes">
+                    <img className='QRCode' src={this.state.QRCodes[0]}></img>
+                    <img className='QRCode' src={this.state.QRCodes[1]}></img>
+                    <img className='QRCode' src={this.state.QRCodes[2]}></img>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div id="SidePanel">
-            <div id="PrayerList">
-              <div id='Prayers'>
-                < div id='Column1' className='PrayerColumn'>
-                  {this.makePrayerList('Column1')}
-                </div>
-                <div id='Column2' className='PrayerColumn'>
-                  {this.makePrayerList('Column2')}
-                </div>
-              </div>
-              <div id="InformationPanel">
-                <div id="DateTimeArea">
-                  <div id='CurrentDate'>
-                    <p id="Date"></p>
+            <div id="SidePanel">
+              <div id="PrayerList">
+                <div id='Prayers'>
+                  < div id='Column1' className='PrayerColumn'>
+                    {this.makePrayerList('Column1')}
                   </div>
-                  <div id='CurrentTime'>
-                    <p id="Time"></p>
+                  <div id='Column2' className='PrayerColumn'>
+                    {this.makePrayerList('Column2')}
                   </div>
                 </div>
-                <div id="NextPrayerArea">
-                  <div id='NextPrayerName'>
-                    <div id="NextPrayer-Name">
-                      <p id="NextPrayerNameLabel"></p>
+                <div id="InformationPanel">
+                  <div id="DateTimeArea">
+                    <div id='CurrentDate'>
+                      <p id="Date"></p>
                     </div>
-                    {/* <div id="NextPrayer-Type">
-                      <p id="NextPrayerTypeLabel"></p>
-                    </div> */}
+                    <div id='CurrentTime'>
+                      <p id="Time"></p>
+                    </div>
                   </div>
-                  <div id='NextPrayerTime'>
-                    <p id="NextPrayerTimeLabel"></p>
+                  <div id="NextPrayerArea">
+                    <div id='NextPrayerName'>
+                      <div id="NextPrayer-Name">
+                        <p id="NextPrayerNameLabel"></p>
+                      </div>
+                    </div>
+                    <div id='NextPrayerTime'>
+                      <p id="NextPrayerTimeLabel"></p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div id='Alerts'>
-                <div id='Status'>{this.state.dataStatus}</div>
-                <div id='Error'>{this.state.errorMessage}</div>
+                <div id='Alerts'>
+                  <div id='Status'>{this.state.dataStatus}</div>
+                  <div id='Error'>{this.state.errorMessage}</div>
+                </div>
               </div>
             </div>
           </div>
-      </div>
+          <PrayerView PrayerName={{English:this.state.nextPrayer.EnglishName,Type:this.state.nextPrayer.PrayerType}} CountDown={this.state.nextPrayer.Difference}/>
+        </div>
     );
   }
 }

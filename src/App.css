@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
 }
-#Main{
+#MainView{
   display: flex;
   height: 100%;
   width:100%
@@ -35,7 +35,6 @@ body {
   font-size: 0.9vw;
   font-family: sans-serif;
   align-items: flex-start;
-  /* font-weight: 600; */
 }
 #MainPanel{
   height: 100%;
@@ -192,11 +191,12 @@ body {
   display: flex;
   width: 100%;
   color: ghostwhite;
-  font-size: 5.9vh;
+  font-size: 3.5vw;
   font-family: sans-serif;
   font-weight: lighter;
   justify-content: center;
   padding-top: 2%;
+  transform: scaleY(1.01);
 }
 #CurrentDate{
   display: flex;
@@ -341,14 +341,14 @@ body {
   display: flex;
   justify-content: center;
   height: 25vh;
-  width: 15.3vw;
+  width: 15vw;
   background-color: #222222;
   align-items: center;
   align-self: center;
 }
 #QRCodes{
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   height: 100%;
   width: 100%;
   background-color: #222222;
