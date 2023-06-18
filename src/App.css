@@ -57,12 +57,31 @@ body {
   display: flex;
   flex-direction: column;
 }
-#MainVideo{
-  /* object-fit:fill; */
+/* #MainVideo{
+  object-fit:fill;
   display: flex;
   height: 100%;
   width: 100%;
+} */
+
+.MainVideo {
+  overflow: hidden;
+  width: 100%;
+  /* Keep it the right aspect-ratio */
+  aspect-ratio: 16/9;
+  /* No clicking/hover effects */
+  pointer-events: none;
+} 
+
+.MainVideo iframe {
+  /* Extend it beyond the viewport... */
+  width: 300%;
+  height: 100%;
+  /* ...and bring it back again */
+  margin-left: -100%;
 }
+
+
 #VideoBorder{
   display: flex;
   height: 0.5%;

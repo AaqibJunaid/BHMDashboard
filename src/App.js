@@ -30,8 +30,8 @@ export default class MainApp extends Component {
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
-      errorMessage:'© Blackhall Mosque Version 1.6',
-      buildVersion: '© Blackhall Mosque Version 1.6',
+      errorMessage:'© Blackhall Mosque Version 1.7',
+      buildVersion: '© Blackhall Mosque Version 1.7',
       nextPrayer:{},
       countdown:'',
       allQRCodes:[],
@@ -560,6 +560,13 @@ export default class MainApp extends Component {
       document.getElementById('NextPrayerTimeLabel').style.transform="scaleY(1.09)";
 
     }
+    else if(hours==0 && minutes == 1 && seconds == 0){
+      displayTime = minutes + 'm ' + seconds+'s'
+      document.getElementById('NextPrayerTimeLabel').style.fontSize="6vh"
+      document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.5vw"
+      document.getElementById('NextPrayerTimeLabel').style.transform="scaleY(1)";
+      this.setState({currentDynamicArea:'Countdown',dynamicHoldCounter:0,switchToArabic:false,languageSwitchCouter:0})
+    }
     else if(hours==0 &&minutes>=1){
       displayTime = minutes + 'm ' + seconds+'s'
       document.getElementById('NextPrayerTimeLabel').style.fontSize="6vh"
@@ -732,7 +739,8 @@ export default class MainApp extends Component {
           <div id="MainView">
             <div id="MainPanel">
                 <div id="Top">
-                <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>
+                {/* <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div> */}
+                <div className='MainVideo'><iframe src="https://www.youtube.com/embed/p8mrOaqp3Vw?controls=0&autoplay=1&loop=1&mute=1&playlist=p8mrOaqp3Vw" frameborder="0" allow="autoplay"></iframe></div>
                 <div id='VideoBorder'></div>
               </div>
               <div id="Bottom">
