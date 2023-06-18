@@ -59,13 +59,56 @@
   font-size: 8vw;
 }
 
-
 #CountDown{
   display: flex;
   height: 40vh;
-  width: 90vw;
-  font-size: 12vw;
+  width: 80vw;
+  font-size: 13.5vw;
   color: ghostwhite;
   align-items: center;
   justify-content: center;
+}
+
+.unit{
+  display: flex;
+  flex-direction: row;
+}
+
+.CountdownText{
+  display: flex;
+  width: 15vw;
+}
+
+.UnitText{
+  display: flex;
+  width: 10vw;
+}
+
+#BottomPanel{
+  display: flex;
+  height: 40vh;
+  width: 95vw;
+  flex-direction: row;
+  color: ghostwhite;
+  align-items: center;
+  justify-content: center;
+}
+
+#Clock{
+  display: flex;
+  height: 40vh;
+  width: 50%;
+  align-items: center;
+  justify-content: center;
+  font-size: 14.5vw;
+}
+
+#TodayDate{
+  display: flex;
+  height: 40vh;
+  width: 50%;
+  align-items: center;
+  justify-content: center;
+  font-size: 6.5vw;
+  font-weight: 300;
 }
