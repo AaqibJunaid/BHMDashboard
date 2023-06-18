@@ -212,10 +212,10 @@ export default class MainApp extends Component {
         }
       }  
       document.getElementById('NextPrayerNameLabel').style.paddingTop= '0%'
-      document.getElementById('NextPrayerNameLabel').style.paddingLeft= '12.5%' 
+      document.getElementById('NextPrayerNameLabel').style.paddingLeft= '11%' 
       document.getElementById('NextPrayerNameLabel').style.justifyContent= 'unset' 
       document.getElementById('NextPrayerNameLabel').innerText= arabicName +'\n'+nextPrayerType +' in ...'
-      document.getElementById('NextPrayerNameLabel').style.fontSize= '1.9vw' 
+      document.getElementById('NextPrayerNameLabel').style.fontSize= '1.95vw' 
     }
     else{
       document.getElementById('NextPrayerNameLabel').innerText= nextPrayerName  +'\n'+nextPrayerType +' in ...' 
@@ -503,14 +503,14 @@ export default class MainApp extends Component {
     }
     else if(hours==0 && minutes == 1 && seconds == 0){
       displayTime = minutes + 'm ' + seconds+'s'
-      document.getElementById('NextPrayerTimeLabel').style.fontSize="6vh"
+      document.getElementById('NextPrayerTimeLabel').style.fontSize="3.5vw"
       document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.5vw"
       document.getElementById('NextPrayerTimeLabel').style.transform="scaleY(1)";
       this.setState({currentDynamicArea:'Countdown',dynamicHoldCounter:0,switchToArabic:false,languageSwitchCouter:0})
     }
     else if(hours==0 &&minutes>=1){
       displayTime = minutes + 'm ' + seconds+'s'
-      document.getElementById('NextPrayerTimeLabel').style.fontSize="6vh"
+      document.getElementById('NextPrayerTimeLabel').style.fontSize="3.5vw"
       document.getElementById('NextPrayerTimeLabel').style.paddingLeft="1.5vw"
       document.getElementById('NextPrayerTimeLabel').style.transform="scaleY(1)";
     }
@@ -681,7 +681,8 @@ export default class MainApp extends Component {
             <div id="MainPanel">
                 <div id="Top">
                 {/* <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div> */}
-                <div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div>
+                {/* <div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div> */}
+                <div id='MainVideo'><iframe src={youtubeEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'100%',pointerEvents:'none'}} frameborder="0" allow="autoplay"></iframe></div>
               </div>
               <div id="Bottom">
                 <div id='Border'></div>
