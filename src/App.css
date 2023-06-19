@@ -98,7 +98,7 @@ body {
 }
 #NextPrayerArea{
   display: flex;
-  width:32.4vw;
+  width:32.8vw;
   height:11.4vh;
   background-color: darkslategray;
   flex-direction: row;
@@ -176,7 +176,7 @@ body {
 }
 #DateTimeArea{
   display: flex;
-  width:32.4vw;
+  width:32.8vw;
   height:11.4vh;
   background-color:darkslategray;
   flex-direction: row;
@@ -225,7 +225,7 @@ body {
   justify-content: center;
 }
 .PrayerTime{
-  width: 15.4vw;
+  width: 15.7vw;
   height: 19.8vh;
   display: flex;
   flex-direction: column;
@@ -295,7 +295,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 15vw;
+  width: 18vw;
   align-items: center;
 }
 #BorderWhite{

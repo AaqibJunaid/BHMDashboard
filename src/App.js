@@ -24,8 +24,8 @@ export default class MainApp extends Component {
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
-      errorMessage:'© Blackhall Mosque Version 2.1',
-      buildVersion: '© Blackhall Mosque Version 2.1',
+      errorMessage:'© Blackhall Mosque Version 2.3',
+      buildVersion: '© Blackhall Mosque Version 2.3',
       nextPrayer:{'EnglishName':'Fajr','Text':'Fajr In','Difference':'0h'},
       allQRCodes:[],
       QRCodes : [],
@@ -149,7 +149,12 @@ export default class MainApp extends Component {
         this.setState({nextPrayer:{'EnglishName':nextPrayerTime.Name,'Text':nextPrayerTime.Type + ' in '+this.handleProgress(),'Difference':counter}})
         
         if(counter == '00s'){
-          this.setState({aboutToApplyHold:true,holdPrayerViewCounter:0,holdPrayerName:nextPrayerTime.Name,holdPrayerType:nextPrayerTime.Type,elipsisCounter:0})
+          if(nextPrayerTime.Name=='Maghrib'){
+            this.setState({aboutToApplyHold:true,holdPrayerViewCounter:0,holdPrayerName:nextPrayerTime.Name,holdPrayerType:'Jamat',elipsisCounter:0})
+          }
+          else{
+            this.setState({aboutToApplyHold:true,holdPrayerViewCounter:0,holdPrayerName:nextPrayerTime.Name,holdPrayerType:nextPrayerTime.Type,elipsisCounter:0})
+          }
         }
       }
       else{
@@ -159,6 +164,8 @@ export default class MainApp extends Component {
           this.setState({currentDynamicArea:'Main',activatePrayerHold:false,elipsisCounter:0})
           document.getElementById('MainView').style.display='flex'
           document.getElementById('PrayerView').style.display='none'
+          this.updatePrayerList()
+          this.syncBottomPanel()
         }
         else{
           if (this.state.holdPrayerName == 'Maghrib'){
