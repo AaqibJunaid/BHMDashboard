@@ -47,41 +47,22 @@ export default class MainApp extends Component {
 
       var prayerItem;
 
-      if (prayerName==='Sunrise'){
-        prayerItem = (
-          <div id={prayerName} className='PrayerTime'>
-            <div id={prayerName+'Body'} className='PrayerBody'>
-              <div id={prayerName+'Label'} className='PrayerName'>
-                <p id ={prayerName+'LabelText'} className='PrayerNameText'>{prayerName}</p>
-              </div>
-              <div id={prayerName+'Start'} className='PrayerStart'>
-                <p id ={prayerName+'StartText'} className='PrayerStartText'></p>
-              </div>
-              <div id={prayerName+'Jamat'} className='PrayerJamat'>
-                <p id ={prayerName+'JamatText'} className='PrayerJamatText'>-- : --</p>
-              </div>
-            </div>
-          </div>
-        )
-      }
-      else{
-        prayerItem = (
-          <div id={prayerName} className='PrayerTime'>
-            <div id={prayerName+'Body'} className='PrayerBody'>
-              <div id={prayerName+'Label'} className='PrayerName'>
-                <p id ={prayerName+'LabelText'} className='PrayerNameText'>{prayerName}</p>
-              </div>
-              <div id={prayerName+'Start'} className='PrayerStart'>
-                <p id ={prayerName+'StartText'} className='PrayerStartText'></p>
-              </div>
-              <div id={prayerName+'Jamat'} className='PrayerJamat'>
-                <p id ={prayerName+'JamatText'} className='PrayerJamatText'></p>
-              </div>
-            </div>
-          </div>
-        )
-      }
       
+      prayerItem = (
+        <div id={prayerName} className='PrayerTime'>
+          <div id={prayerName+'Body'} className='PrayerBody'>
+            <div id={prayerName+'Label'} className='PrayerName'>
+              {prayerName}
+            </div>
+            <div id={prayerName+'Start'} className='PrayerStart'>
+            </div>
+            <div id={prayerName+'Jamat'} className='PrayerJamat'>
+              {(prayerName==='Sunrise')?'-- : --':''}
+            </div>
+          </div>
+        </div>
+      )
+
       if (prayerName=='Fajr'){
         prayerLists1.push(prayerItem)
       }
@@ -232,11 +213,11 @@ export default class MainApp extends Component {
     
     PrayerNames.forEach(function(prayerName) {
       if (prayerName ==='Sunrise'){
-        document.getElementById('SunriseStartText').innerText=(todayTimes[prayerName]).substring(0,5)
+        document.getElementById('SunriseStart').innerText=(todayTimes[prayerName]).substring(0,5)
       }
       else{
-        document.getElementById(prayerName+'StartText').innerText=(todayTimes[prayerName+' Start']).substring(0,5)
-        document.getElementById(prayerName+'JamatText').innerText=(todayTimes[prayerName+' Jamat']).substring(0,5)
+        document.getElementById(prayerName+'Start').innerText=(todayTimes[prayerName+' Start']).substring(0,5)
+        document.getElementById(prayerName+'Jamat').innerText=(todayTimes[prayerName+' Jamat']).substring(0,5)
       }
     })
 
@@ -246,16 +227,16 @@ export default class MainApp extends Component {
     backgroundColours.forEach(function(prayer){
         document.getElementById(prayer.Name).style.backgroundColor=prayer.Background
         document.getElementById(prayer.Name+'Jamat').style.backgroundColor=prayer.Jamat
-        document.getElementById(prayer.Name+'LabelText').style.color=prayer.MainText
-        document.getElementById(prayer.Name+'StartText').style.color=prayer.MainText
-        document.getElementById(prayer.Name+'JamatText').style.color=prayer.JamatText
+        document.getElementById(prayer.Name+'Label').style.color=prayer.MainText
+        document.getElementById(prayer.Name+'Start').style.color=prayer.MainText
+        document.getElementById(prayer.Name+'Jamat').style.color=prayer.JamatText
     })
   }
 
   updateLanguage(){
     if (this.state.switchToArabic === true){
       for (var i=0;i<PrayerNames.length;i++){
-        document.getElementById(PrayerNames[i]+'LabelText').innerText=arabicPrayerNames[i]
+        document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
       }      
       if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
         document.getElementById('Date').innerText=getLongDate()
@@ -272,7 +253,7 @@ export default class MainApp extends Component {
     }
     else{
       PrayerNames.forEach(function (prayer){
-        document.getElementById(prayer+'LabelText').innerText=prayer
+        document.getElementById(prayer+'Label').innerText=prayer
       })
       document.getElementById('Date').innerText=getLongDate()
       document.getElementById('Date').style.fontSize='2vw'
