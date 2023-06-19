@@ -685,7 +685,8 @@ export default class MainApp extends Component {
                 <div id='MainVideo'><iframe src={youtubeEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'100%',pointerEvents:'none'}} frameborder="0" allow="autoplay"></iframe></div>
               </div>
               <div id="Bottom">
-                <div id='Border'></div>
+                <div id='BorderWhite'></div>
+                <div id='BorderPadding'></div>
                 <div id="BrandingArea">
                   <img id ="logo" src={logo}></img>
                   <div id="QRCodes">
