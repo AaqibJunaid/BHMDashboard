@@ -1,0 +1,1 @@
+export const appVersion = '© Blackhall Mosque Version 2.4'

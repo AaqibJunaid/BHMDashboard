@@ -8,6 +8,7 @@ import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate } from './Fun
 import { nodejsEndpoint, youtubeEmbed } from './Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from './Configs/prayerConfigs';
 import { arabicSwitchMax,qrUpdateMax,prayerHoldTimesMax } from './Configs/timingConfigs';
+import { appVersion } from './Configs/systemConfigs';
 
 
 export default class MainApp extends Component {
@@ -24,8 +25,8 @@ export default class MainApp extends Component {
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
-      errorMessage:'© Blackhall Mosque Version 2.4',
-      buildVersion: '© Blackhall Mosque Version 2.4',
+      errorMessage:appVersion,
+      buildVersion: appVersion,
       nextPrayer:{'EnglishName':'Fajr','Text':'Fajr In','Difference':'0h'},
       allQRCodes:[],
       QRCodes : [],
