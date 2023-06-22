@@ -4,10 +4,10 @@ import axios from 'axios';
 import mosqueTimes from './mosqueTimes.json'
 import logo from './Assets/Logo.jpg'
 import PrayerView from './PrayerView/PrayerView';
-import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate } from './Functions/Date Functions';
-import { nodejsEndpoint, youtubeEmbed } from './Configs/urlConfigs';
+import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate,getDayOfWeek } from './Functions/Date Functions';
+import { nodejsEndpoint, youtubeEmbed, youtubeMiniEmbed } from './Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from './Configs/prayerConfigs';
-import { arabicSwitchMax,qrUpdateMax,prayerHoldTimesMax } from './Configs/timingConfigs';
+import { arabicSwitchMax,qrUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames } from './Configs/timingConfigs';
 import { appVersion } from './Configs/systemConfigs';
 
 
@@ -36,7 +36,8 @@ export default class MainApp extends Component {
       holdPrayerViewCounter:0,
       holdPrayerName:'',
       holdPrayerType:'',
-      elipsisCounter:0
+      elipsisCounter:0,
+      mainVideo:<div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div>
     }
   }
   
@@ -47,7 +48,6 @@ export default class MainApp extends Component {
     PrayerNames.forEach(function(prayerName){
 
       var prayerItem;
-
       
       prayerItem = (
         <div id={prayerName} className='PrayerTime'>
@@ -120,6 +120,7 @@ export default class MainApp extends Component {
       document.getElementById('PrayerView').style.display='none'
       this.updatePrayerList()
       this.syncBottomPanel()
+      this.handleVideo()
 
       if(this.state.qrUpdateTimer==qrUpdateMax){
         this.updateQRCodes()
@@ -651,8 +652,48 @@ export default class MainApp extends Component {
     }
     
     this.setState({QRCodes:displayCodes})
-
   }
+
+  handleVideo(){
+    var todayHolds = []
+    var todayTimes = this.state.todayData
+    const now = new Date()
+
+    PrayerNames.forEach((prayer)=>{
+      if (prayer=='Zuhur' && getDayOfWeek(now)=='Friday'){
+        todayHolds.push({StartTime:'12:00:00',EndTime:'15:00:00'})
+      }
+      else if(prayer !== 'Sunrise'){
+        var jamatTime = new Date(now.toDateString() + ' ' + (todayTimes[prayer+' Jamat']))
+        var StartTime = new Date(jamatTime.getTime()-15*60000)
+        var EndTime = new Date(jamatTime.getTime()+15*60000)
+        todayHolds.push({StartTime:StartTime.toLocaleTimeString(),'EndTime':EndTime.toLocaleTimeString()})
+      }
+    })
+
+    holdVideoTimeFrames.forEach((timeFrame)=>{
+      if (timeFrame.Date == getTodaysDate()){
+        todayHolds.push({StartTime:timeFrame.StartTime,EndTime:timeFrame.EndTime})
+      }
+    })
+
+    var switchToMiniVideo = false
+
+    for (var i = 0;i<todayHolds.length;i++){
+      if(now.toLocaleTimeString()>= todayHolds[i].StartTime && now.toLocaleTimeString()<= todayHolds[i].EndTime ){
+        switchToMiniVideo=true
+        break;
+      }
+    }
+
+    if (switchToMiniVideo){
+      this.setState({mainVideo:<div className='MainVideo'><iframe src={youtubeMiniEmbed} frameborder="0" allow="autoplay"></iframe></div>})
+    }
+    else{
+      this.setState({mainVideo:<div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div>})
+    }
+  }
+
 
   componentDidMount(){
     // this.updatePrayerList()
@@ -670,8 +711,9 @@ export default class MainApp extends Component {
             <div id="MainPanel">
                 <div id="Top">
                 {/* <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div> */}
+                {this.state.mainVideo}
                 {/* <div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div> */}
-                <div id='MainVideo'><iframe src={youtubeEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'100%',pointerEvents:'none'}} frameborder="0" allow="autoplay"></iframe></div>
+                {/* <div id='MainVideo'><iframe src={youtubeEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'100%',pointerEvents:'none'}} frameborder="0" allow="autoplay"></iframe></div> */}
               </div>
               <div id="Bottom">
                 <div id='BorderWhite'></div>
