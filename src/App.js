@@ -7,7 +7,7 @@ import PrayerView from './PrayerView/PrayerView';
 import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate,getDayOfWeek } from './Functions/Date Functions';
 import { nodejsEndpoint, youtubeEmbed, youtubeMiniEmbed } from './Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from './Configs/prayerConfigs';
-import { arabicSwitchMax,qrUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames } from './Configs/timingConfigs';
+import { arabicSwitchMax,qrUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames } from './Configs/timingConfigs';
 import { appVersion } from './Configs/systemConfigs';
 
 
@@ -114,8 +114,138 @@ export default class MainApp extends Component {
     }
   }
 
+  calculatePrayerViewTimings(){
+
+    var prayerViewTimes=[]
+    var todayTimes = this.state.todayData
+    const now = new Date()
+
+    PrayerNames.forEach((prayer)=>{
+      if (prayer=='Zuhur' && getDayOfWeek(now)=='Monday'){
+        console.log("Here")
+
+        for (var i=0;i<jummahPrayerTimes.length;i++){
+          var jamatTime = new Date(now.toDateString() + ' ' + (jummahPrayerTimes[i]))
+          var jummahStartTime = new Date(jamatTime.getTime()-1*60000)
+          var jumaahStartEndTime = new Date(jamatTime.getTime())
+          var jummahKhutbahStartTime = new Date(jamatTime.getTime()-1000)
+          var jumaahKhutbahEndTime = new Date(jamatTime.getTime()+15*60000)
+          var jummahJamatStartTime = new Date(jamatTime.getTime()+(15*60000)-1000)
+          var jumaahJamatEndTime = new Date(jamatTime.getTime()+30*60000)
+          var jummahNumber = ([i]+1==1)?'1st':'2nd'
+          prayerViewTimes.push({'MainTitle':jummahNumber+' Jummah','BottomTitle':'Starts in','ViewType':'Countdown','StartTime':jummahStartTime.toLocaleTimeString(),'EndTime':jumaahStartEndTime.toLocaleTimeString()})
+          prayerViewTimes.push({'MainTitle':jummahNumber+' Jummah','BottomTitle':'Khutbah in progress','ViewType':'Static','StartTime':jummahKhutbahStartTime.toLocaleTimeString(),'EndTime':jumaahKhutbahEndTime.toLocaleTimeString()})
+          prayerViewTimes.push({'MainTitle':jummahNumber+' Jummah','BottomTitle':'Jamat in progress','ViewType':'Static','StartTime':jummahJamatStartTime.toLocaleTimeString(),'EndTime':jumaahJamatEndTime.toLocaleTimeString()})
+        }
+
+      }
+      else if(prayer == 'Sunrise'){
+        var prayerTime = new Date(now.toDateString() + ' ' + (todayTimes['Sunrise']))
+        var StartTime = new Date(prayerTime.getTime()-1*60000)
+        var EndTime = new Date(prayerTime.getTime())
+        prayerViewTimes.push({'MainTitle':'Sunrise','BottomTitle':'Starts in','ViewType':'Countdown','StartTime':StartTime.toLocaleTimeString(),'EndTime':EndTime.toLocaleTimeString()})
+      }
+      else if(prayer == 'Maghrib'){
+        var prayerMaxHold = prayerHoldTimesMax['MaghribJamat']
+        var prayerTime = new Date(now.toDateString() + ' ' + (todayTimes[prayer+' Start']))
+        var prayerStartTime = new Date(prayerTime.getTime()-1*60000)
+        var prayerEndTime = new Date(prayerTime.getTime())
+        var jamatStartTime = new Date(prayerTime.getTime()-1000)
+        var jamatEndTime = new Date(prayerTime.getTime()+prayerMaxHold*60000)
+
+        prayerViewTimes.push({'MainTitle':'Maghrib','BottomTitle':'Starts in','ViewType':'Countdown','StartTime':prayerStartTime.toLocaleTimeString(),'EndTime':prayerEndTime.toLocaleTimeString()})
+        prayerViewTimes.push({'MainTitle':'Maghrib','BottomTitle':'Jamat in Progress','ViewType':'Static','StartTime':jamatStartTime.toLocaleTimeString(),'EndTime':jamatEndTime.toLocaleTimeString()})
+
+      }
+      else {
+        var prayerMaxHold = prayerHoldTimesMax[prayer+'Starts']
+        var jamatMaxHold = prayerHoldTimesMax[prayer+'Jamat']
+
+        var prayerTime = new Date(now.toDateString() + ' ' + (todayTimes[prayer+' Start']))
+        var jamatTime = new Date(now.toDateString() + ' ' + (todayTimes[prayer+' Jamat']))
+
+        var prayerStartTime = new Date(prayerTime.getTime()-1*60000)
+        var prayerEndTime = new Date(prayerTime.getTime())
+        var prayerHoldStartTime = new Date(prayerTime.getTime()-1000)
+        var prayerHoldEndTime = new Date(prayerTime.getTime()+prayerMaxHold*60000)
+
+        var jamatStartTime = new Date(jamatTime.getTime()-1*60000)
+        var jamatEndTime = new Date(jamatTime.getTime())
+        var jamatHoldStartTime = new Date(jamatTime.getTime()-1000)
+        var jamatHoldEndTime = new Date(jamatTime.getTime()+jamatMaxHold*60000)
+
+
+        prayerViewTimes.push({'MainTitle':prayer,'BottomTitle':'Starts in','ViewType':'Countdown','StartTime':prayerStartTime.toLocaleTimeString(),'EndTime':prayerEndTime.toLocaleTimeString()})
+        prayerViewTimes.push({'MainTitle':prayer,'BottomTitle':'Now Started','ViewType':'Static','StartTime':prayerHoldStartTime.toLocaleTimeString(),'EndTime':prayerHoldEndTime.toLocaleTimeString()})
+        prayerViewTimes.push({'MainTitle':prayer,'BottomTitle':'Jamat in','ViewType':'Countdown','StartTime':jamatStartTime.toLocaleTimeString(),'EndTime':jamatEndTime.toLocaleTimeString()})
+        prayerViewTimes.push({'MainTitle':prayer,'BottomTitle':'Jamat in Progress','ViewType':'Static','StartTime':jamatHoldStartTime.toLocaleTimeString(),'EndTime':jamatHoldEndTime.toLocaleTimeString()})
+      }
+    })
+
+    eventTimeFrames.forEach((event)=>{
+      if (event.Date == getTodaysDate()){
+        prayerViewTimes.push({'MainTitle':event.MainTitle,'BottomTitle':event.BottomTitle,'ViewType':'Static','StartTime':event.StartTime,'EndTime':event.EndTime})
+      }
+    })
+
+    console.log(prayerViewTimes)
+    return prayerViewTimes
+
+  }
+
   manageView(){
-    if (this.state.currentDynamicArea=='Main'){
+    if(this.state.dataStatus!=="Initialising Application..."){
+      
+      var prayerViewTimings = this.calculatePrayerViewTimings()
+      var matchFound = false
+      const now = new Date()
+
+      for (var i=0;i<prayerViewTimings.length;i++){
+
+        if(now.toLocaleTimeString()>= prayerViewTimings[i].StartTime && now.toLocaleTimeString()< prayerViewTimings[i].EndTime ){
+
+          matchFound=true
+
+          if(prayerViewTimings[i].ViewType=='Static'){
+            this.setState({nextPrayer:{'EnglishName':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle,'Difference':getCurrentTime()},activatePrayerHold:true})
+          }
+          else{
+            var prayerTime = new Date(now.toDateString() + ' ' + prayerViewTimings[i].EndTime)
+            var prayer = {'Name':prayerViewTimings[i].MainTitle,"Type": 'Starts','Time':prayerTime}
+            var timeDiff = this.nextPrayerTimeDifference(prayer)
+            this.setState({nextPrayer:{'EnglishName':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle+this.handleProgress(),'Difference':timeDiff},activatePrayerHold:false})
+          }
+          break;
+        }
+      }
+
+      if(matchFound){
+        document.getElementById('MainView').style.display='none'
+        document.getElementById('PrayerView').style.display='flex'
+      }
+      else{
+        document.getElementById('MainView').style.display='flex'
+        document.getElementById('PrayerView').style.display='none'
+        this.updatePrayerList()
+        this.syncBottomPanel()
+        this.handleVideo()
+        this.setState({elipsisCounter:0})
+        if(this.state.qrUpdateTimer==qrUpdateMax){
+          this.updateQRCodes()
+          this.setState({qrUpdateTimer:0})
+        }
+        else{
+          this.setState({qrUpdateTimer:this.state.qrUpdateTimer+1})
+        }
+      }
+    }
+  }
+
+  manageView1(){
+    if(this.state.dataStatus=="Initialising Application..."){
+      
+    }
+    else if (this.state.currentDynamicArea=='Main'){
       document.getElementById('MainView').style.display='flex'
       document.getElementById('PrayerView').style.display='none'
       this.updatePrayerList()
@@ -280,44 +410,11 @@ export default class MainApp extends Component {
 
   updateDynamicBox(){
     var todayTimes=this.state.todayData
-    // if (this.state.currentDynamicArea === 'ClockDate'){
-    //   document.getElementById('NextPrayerArea').style.display='none'
-      document.getElementById('DateTimeArea').style.display='flex'
-      document.getElementById('Time').innerText=getCurrentTime(true)
-    // }
-    // else{
-    //   document.getElementById('DateTimeArea').style.display='none'
-      document.getElementById('NextPrayerArea').style.display='flex'
-      // if (holdNextPrayer == true){
-      //   dynamicHoldCounter = 0
-      //   document.getElementById('NextPrayerTimeLabel').innerText='Progress'
-      //   if (holdCounter == 15){
-      //     holdNextPrayer = false
-      //     dynamicHoldCounter=9
-      //     holdCounter=0
-      //   }
-      //   else{
-      //     holdCounter++
-      //   }
-      // }
-      // else{
-        this.updateNextPrayer(this.getNextPrayerTime(todayTimes))
-      // }
-    // }
-
-    // this.setState({dynamicHoldCounter:this.state.dynamicHoldCounter+1})
-    //will force switch to prayer countdown if needed
+    document.getElementById('DateTimeArea').style.display='flex'
+    document.getElementById('Time').innerText=getCurrentTime(true)
+    document.getElementById('NextPrayerArea').style.display='flex'
+    this.updateNextPrayer(this.getNextPrayerTime(todayTimes))
     this.nextPrayerTimeDifference(this.getNextPrayerTime(todayTimes))
-
-    // if(this.state.dynamicHoldCounter===this.state.dynamicSwitchMax){
-    //   this.setState({dynamicHoldCounter:0})
-    //   if(this.state.currentDynamicArea === 'ClockDate'){
-    //     this.setState({currentDynamicArea:'NextPrayer'})
-    //   }
-    //   else{
-    //     this.setState({currentDynamicArea:'ClockDate'})
-    //   }
-    // }
   }
   
   syncBottomPanel(){
@@ -468,7 +565,7 @@ export default class MainApp extends Component {
     var nextPrayerTime = nextPrayer.Time
     var timeDiff = nextPrayerTime - now;
     var displayTime
- 
+
     var hours = Math.floor(timeDiff / (1000 * 60 * 60));
     if (hours<10){
       hours = '0'+hours
@@ -517,16 +614,6 @@ export default class MainApp extends Component {
     }
     return displayTime
   }
-
-  handleError(show){
-    if(show){
-      document.getElementById('Error').style.display='flex'
-    }
-    else{
-    this.setState({errorMessage:this.state.buildVersion})
-    }
-  }
-
   getTomorrowData(){
     const today = new Date()
     const tomorrow = new Date(today)
@@ -579,8 +666,6 @@ export default class MainApp extends Component {
     else{
       this.setState({errorMessage:err})
     }
-
-    this.handleError(true)
   }
 
   callAPI = async () => {
@@ -588,7 +673,7 @@ export default class MainApp extends Component {
     if (res.data.Status == 'Successfull'){
       this.setState({todayData:res.data.Data.todayData,tomorrowData:res.data.Data.tomorrowData,currentIslamicDate:res.data.Data.hijriDate,dataStatus:"Data Refreshed at "+getCurrentTime(false)})
       this.setState({lastKnownData:{'lastRefreshed':getTodaysDate(),'todayData':this.state.todayData,'tomorrowData':res.data.Data.tomorrowData,'hijriDate':res.data.Data.hijriDate}})
-      this.handleError(false)
+      this.setState({errorMessage:this.state.buildVersion})
     }
     else{
       this.handleApiError(res.data.Data)
@@ -700,6 +785,7 @@ export default class MainApp extends Component {
     // this.syncBottomPanel()
     this.getImages()
     this.interval = setInterval(() => this.manageView(), 1000);
+    this.calculatePrayerViewTimings()
     this.callAPI()
     this.interval = setInterval(() => this.getData(), 30000);
   }
@@ -707,65 +793,73 @@ export default class MainApp extends Component {
   render(){
       return (
         <div id="Main">
-          <div id="MainView">
-            <div id="MainPanel">
-                <div id="Top">
-                {/* <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div> */}
-                {this.state.mainVideo}
-                {/* <div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div> */}
-                {/* <div id='MainVideo'><iframe src={youtubeEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'100%',pointerEvents:'none'}} frameborder="0" allow="autoplay"></iframe></div> */}
-              </div>
-              <div id="Bottom">
-                <div id='BorderWhite'></div>
-                <div id='BorderPadding'></div>
-                <div id="BrandingArea">
-                  <img id ="logo" src={logo}></img>
-                  <div id="QRCodes">
-                    <img className='QRCode' src={this.state.QRCodes[0]}></img>
-                    <img className='QRCode' src={this.state.QRCodes[1]}></img>
-                    <img className='QRCode' src={this.state.QRCodes[2]}></img>
+          {(this.state.dataStatus=="Initialising Application...")?
+          (<div id='LoadScreen'>
+            <div class="custom-loader"></div>
+          </div>)
+          :
+          (<div>
+              <div id="MainView">
+              <div id="MainPanel">
+                  <div id="Top">
+                  {/* <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div> */}
+                  {this.state.mainVideo}
+                  {/* <div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div> */}
+                  {/* <div id='MainVideo'><iframe src={youtubeEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'100%',pointerEvents:'none'}} frameborder="0" allow="autoplay"></iframe></div> */}
+                </div>
+                <div id="Bottom">
+                  <div id='BorderWhite'></div>
+                  <div id='BorderPadding'></div>
+                  <div id="BrandingArea">
+                    <img id ="logo" src={logo}></img>
+                    <div id="QRCodes">
+                      <img className='QRCode' src={this.state.QRCodes[0]}></img>
+                      <img className='QRCode' src={this.state.QRCodes[1]}></img>
+                      <img className='QRCode' src={this.state.QRCodes[2]}></img>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div id="SidePanel">
-              <div id="PrayerList">
-                <div id='Prayers'>
-                  < div id='Column1' className='PrayerColumn'>
-                    {this.makePrayerList('Column1')}
-                  </div>
-                  <div id='Column2' className='PrayerColumn'>
-                    {this.makePrayerList('Column2')}
-                  </div>
-                </div>
-                <div id="InformationPanel">
-                  <div id="DateTimeArea">
-                    <div id='CurrentDate'>
-                      <p id="Date"></p>
+              <div id="SidePanel">
+                <div id="PrayerList">
+                  <div id='Prayers'>
+                    < div id='Column1' className='PrayerColumn'>
+                      {this.makePrayerList('Column1')}
                     </div>
-                    <div id='CurrentTime'>
-                      <p id="Time"></p>
+                    <div id='Column2' className='PrayerColumn'>
+                      {this.makePrayerList('Column2')}
                     </div>
                   </div>
-                  <div id="NextPrayerArea">
-                    <div id='NextPrayerName'>
-                      <div id="NextPrayer-Name">
-                        <p id="NextPrayerNameLabel"></p>
+                  <div id="InformationPanel">
+                    <div id="DateTimeArea">
+                      <div id='CurrentDate'>
+                        <p id="Date"></p>
+                      </div>
+                      <div id='CurrentTime'>
+                        <p id="Time"></p>
                       </div>
                     </div>
-                    <div id='NextPrayerTime'>
-                      <p id="NextPrayerTimeLabel"></p>
+                    <div id="NextPrayerArea">
+                      <div id='NextPrayerName'>
+                        <div id="NextPrayer-Name">
+                          <p id="NextPrayerNameLabel"></p>
+                        </div>
+                      </div>
+                      <div id='NextPrayerTime'>
+                        <p id="NextPrayerTimeLabel"></p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div id='Alerts'>
-                  <div id='Status'>{this.state.dataStatus}</div>
-                  <div id='Error'>{this.state.errorMessage}</div>
+                  <div id='Alerts'>
+                    <div id='Status'>{this.state.dataStatus}</div>
+                    <div id='Error'>{this.state.errorMessage}</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <PrayerView PrayerName={{English:this.state.nextPrayer.EnglishName,BottomText:this.state.nextPrayer.Text}} CountDown={this.state.nextPrayer.Difference} activatePrayerHold={this.state.activatePrayerHold}/>
+            <PrayerView PrayerName={{English:this.state.nextPrayer.EnglishName,BottomText:this.state.nextPrayer.Text}} CountDown={this.state.nextPrayer.Difference} activatePrayerHold={this.state.activatePrayerHold}/>
+          </div>)
+          }
         </div>
     );
   }
