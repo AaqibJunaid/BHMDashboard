@@ -115,15 +115,12 @@ export default class MainApp extends Component {
   }
 
   calculatePrayerViewTimings(){
-
     var prayerViewTimes=[]
     var todayTimes = this.state.todayData
     const now = new Date()
 
     PrayerNames.forEach((prayer)=>{
-      if (prayer=='Zuhur' && getDayOfWeek(now)=='Monday'){
-        console.log("Here")
-
+      if (prayer=='Zuhur' && getDayOfWeek(now)=='Friday'){
         for (var i=0;i<jummahPrayerTimes.length;i++){
           var jamatTime = new Date(now.toDateString() + ' ' + (jummahPrayerTimes[i]))
           var jummahStartTime = new Date(jamatTime.getTime()-1*60000)
@@ -187,10 +184,7 @@ export default class MainApp extends Component {
         prayerViewTimes.push({'MainTitle':event.MainTitle,'BottomTitle':event.BottomTitle,'ViewType':'Static','StartTime':event.StartTime,'EndTime':event.EndTime})
       }
     })
-
-    console.log(prayerViewTimes)
     return prayerViewTimes
-
   }
 
   manageView(){
@@ -241,83 +235,10 @@ export default class MainApp extends Component {
     }
   }
 
-  manageView1(){
-    if(this.state.dataStatus=="Initialising Application..."){
-      
-    }
-    else if (this.state.currentDynamicArea=='Main'){
-      document.getElementById('MainView').style.display='flex'
-      document.getElementById('PrayerView').style.display='none'
-      this.updatePrayerList()
-      this.syncBottomPanel()
-      this.handleVideo()
-
-      if(this.state.qrUpdateTimer==qrUpdateMax){
-        this.updateQRCodes()
-        this.setState({qrUpdateTimer:0})
-      }
-      else{
-        this.setState({qrUpdateTimer:this.state.qrUpdateTimer+1})
-      }
-    }
-    else{
-      if (this.state.aboutToApplyHold){
-        if (this.state.holdPrayerName == 'Maghrib'){
-          this.setState({nextPrayer:{'EnglishName':this.state.holdPrayerName,'Text':'Jamat in progress','Difference':getCurrentTime()},holdPrayerViewCounter:this.state.holdPrayerViewCounter+1,aboutToApplyHold:false,activatePrayerHold:true})
-        }
-        else if(this.state.holdPrayerType=='Starts'){
-          this.setState({nextPrayer:{'EnglishName':this.state.holdPrayerName,'Text':"Now Started",'Difference':getCurrentTime()},holdPrayerViewCounter:this.state.holdPrayerViewCounter+1,aboutToApplyHold:false,activatePrayerHold:true})
-        }
-        else{
-          this.setState({nextPrayer:{'EnglishName':this.state.holdPrayerName,'Text':'Jamat in progress','Difference':getCurrentTime()},holdPrayerViewCounter:this.state.holdPrayerViewCounter+1,aboutToApplyHold:false,activatePrayerHold:true})
-        }
-      }
-      else if(this.state.activatePrayerHold == false){
-        document.getElementById('MainView').style.display='none'
-        document.getElementById('PrayerView').style.display='flex'
-        var todayTimes=this.state.todayData
-        var nextPrayerTime = this.getNextPrayerTime(todayTimes)
-        var counter = this.nextPrayerTimeDifference(nextPrayerTime)
-        this.setState({nextPrayer:{'EnglishName':nextPrayerTime.Name,'Text':nextPrayerTime.Type + ' in '+this.handleProgress(),'Difference':counter}})
-        
-        if(counter == '00s'){
-          if(nextPrayerTime.Name=='Maghrib'){
-            this.setState({aboutToApplyHold:true,holdPrayerViewCounter:0,holdPrayerName:nextPrayerTime.Name,holdPrayerType:'Jamat',elipsisCounter:0})
-          }
-          else{
-            this.setState({aboutToApplyHold:true,holdPrayerViewCounter:0,holdPrayerName:nextPrayerTime.Name,holdPrayerType:nextPrayerTime.Type,elipsisCounter:0})
-          }
-        }
-      }
-      else{
-        var prayerMaxHold = prayerHoldTimesMax[this.state.holdPrayerName+""+this.state.holdPrayerType]
-
-        if(this.state.holdPrayerViewCounter == prayerMaxHold){
-          this.setState({currentDynamicArea:'Main',activatePrayerHold:false,elipsisCounter:0})
-          document.getElementById('MainView').style.display='flex'
-          document.getElementById('PrayerView').style.display='none'
-          this.updatePrayerList()
-          this.syncBottomPanel()
-        }
-        else{
-          if (this.state.holdPrayerName == 'Maghrib'){
-            this.setState({nextPrayer:{'EnglishName':this.state.holdPrayerName,'Text':'Jamat in progress','Difference':getCurrentTime()},holdPrayerViewCounter:this.state.holdPrayerViewCounter+1})
-          }
-          else if(this.state.holdPrayerType=='Starts'){
-            this.setState({nextPrayer:{'EnglishName':this.state.holdPrayerName,'Text':"Now Started",'Difference':getCurrentTime()},holdPrayerViewCounter:this.state.holdPrayerViewCounter+1})
-          }
-          else{
-            this.setState({nextPrayer:{'EnglishName':this.state.holdPrayerName,'Text':'Jamat in progress','Difference':getCurrentTime()},holdPrayerViewCounter:this.state.holdPrayerViewCounter+1})
-          }
-        }
-      }
-    }
-  }
-
   updateNextPrayer(nextPrayer){
     var nextPrayerName = nextPrayer.Name
     var nextPrayerType = nextPrayer.Type
- 
+    var now = new Date()
     var displayTime = this.nextPrayerTimeDifference(nextPrayer)
 
     this.setState({nextPrayer:{'EnglishName':nextPrayerName,'ArabicName':this.state.prayers[nextPrayerName],'PrayerType':nextPrayerType,'Difference':displayTime}})
@@ -327,7 +248,12 @@ export default class MainApp extends Component {
 
       for (var i=0;i<PrayerNames.length;i++){
         if (PrayerNames[i]===nextPrayerName){
-          arabicName = arabicPrayerNames[i]
+          if (nextPrayerName=='Zuhur' && getDayOfWeek(now)=='Friday'){
+            arabicName = 'جمعة'
+          }
+          else{
+            arabicName = arabicPrayerNames[i]
+          }
           break;
         }
       }  
@@ -338,6 +264,9 @@ export default class MainApp extends Component {
       document.getElementById('NextPrayerNameLabel').style.fontSize= '1.95vw' 
     }
     else{
+      if (nextPrayerName=='Zuhur' && getDayOfWeek(now)=='Friday'){
+        nextPrayerName = 'Jummah'
+      }
       document.getElementById('NextPrayerNameLabel').innerText= nextPrayerName  +'\n'+nextPrayerType +' in ...' 
       document.getElementById('NextPrayerNameLabel').style.paddingTop= '2%' 
       document.getElementById('NextPrayerNameLabel').style.paddingLeft= '12.5%' 
@@ -349,6 +278,18 @@ export default class MainApp extends Component {
 
   updatePrayerList(){
     var todayTimes=this.state.todayData
+    var now = new Date()
+    
+    if (getDayOfWeek(now)=='Friday'){
+      if (now.toLocaleTimeString()>=jummahPrayerTimes[0]){
+        todayTimes['Zuhur Jamat']=jummahPrayerTimes[1]
+      }
+      else{
+        todayTimes['Zuhur Jamat']=jummahPrayerTimes[0]
+      }
+      this.setState({todayData:todayTimes})
+      console.log(todayTimes)
+    }
     
     PrayerNames.forEach(function(prayerName) {
       if (prayerName ==='Sunrise'){
@@ -373,9 +314,15 @@ export default class MainApp extends Component {
   }
 
   updateLanguage(){
+    var now = new Date()
     if (this.state.switchToArabic === true){
       for (var i=0;i<PrayerNames.length;i++){
-        document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
+        if (getDayOfWeek(now)=='Friday'){
+          document.getElementById('ZuhurLabel').innerText='جمعة'
+        }
+        else{
+          document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
+        }
       }      
       if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
         document.getElementById('Date').innerText=getLongDate()
@@ -392,7 +339,12 @@ export default class MainApp extends Component {
     }
     else{
       PrayerNames.forEach(function (prayer){
-        document.getElementById(prayer+'Label').innerText=prayer
+        if (getDayOfWeek(now)=='Friday'){
+          document.getElementById('ZuhurLabel').innerText='Jummah'
+        }
+        else{
+          document.getElementById(prayer+'Label').innerText=prayer
+        }
       })
       document.getElementById('Date').innerText=getLongDate()
       document.getElementById('Date').style.fontSize='2vw'
@@ -686,6 +638,7 @@ export default class MainApp extends Component {
   }
 
   getData(){
+    const now = new Date()
     var minute = getCurrentTime(false)
     minute = minute.substring(3,5)
 
