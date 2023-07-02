@@ -2,14 +2,14 @@ export const arabicSwitchMax = 10
 export const qrUpdateMax = 10
 export const prayerHoldTimesMax = {
     'FajrStarts':'2',
-    'FajrJamat':'15',
+    'FajrJamat':'13',
     'SunriseStarts':'2',
     'ZuhurStarts':'2',
     'ZuhurJamat':'15',
     'AsrStarts':'2',
     'AsrJamat':'15',
     'MaghribStarts':'2',
-    'MaghribJamat':'15',
+    'MaghribJamat':'14',
     'IshaStarts':'2',
     'IshaJamat':'15',
 }
@@ -26,7 +26,7 @@ export const prayerHoldTimesMax = {
 //     'IshaStarts':'0',
 //     'IshaJamat':'0',
 // }
-export const holdVideoTimeFrames = [{'Date':'25/06/2023','StartTime':'12:00','EndTime':'15:00'}]
+export const holdVideoTimeFrames = [{'Date':'02/07/2023','StartTime':'12:26','EndTime':'15:00'}]
 export const eventTimeFrames = [
                                     {'MainTitle':'Eid Prayer','BottomTitle':'Now in progress','Date':'28/06/2023','StartTime':'06:00','EndTime':'06:30'},
                                     {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'28/06/2023','StartTime':'06:30','EndTime':'07:00'},

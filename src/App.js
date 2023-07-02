@@ -5,7 +5,7 @@ import mosqueTimes from './mosqueTimes.json'
 import logo from './Assets/Logo.jpg'
 import PrayerView from './PrayerView/PrayerView';
 import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate,getDayOfWeek } from './Functions/Date Functions';
-import { nodejsEndpoint, youtubeEmbed, youtubeMiniEmbed } from './Configs/urlConfigs';
+import { nodejsEndpoint, youtubeEmbed, youtubeMiniEmbed,mainVideoEmbed,shortVideoEmbed } from './Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from './Configs/prayerConfigs';
 import { arabicSwitchMax,qrUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames } from './Configs/timingConfigs';
 import { appVersion } from './Configs/systemConfigs';
@@ -37,7 +37,7 @@ export default class MainApp extends Component {
       holdPrayerName:'',
       holdPrayerType:'',
       elipsisCounter:0,
-      mainVideo:<div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div>
+      mainVideo: <div id='MainVideo'><iframe src={mainVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>
     }
   }
   
@@ -725,10 +725,10 @@ export default class MainApp extends Component {
     }
 
     if (switchToMiniVideo){
-      this.setState({mainVideo:<div className='MainVideo'><iframe src={youtubeMiniEmbed} frameborder="0" allow="autoplay"></iframe></div>})
+      this.setState({mainVideo:<div id='MainVideo'><iframe src={shortVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
     }
     else{
-      this.setState({mainVideo:<div className='MainVideo'><iframe src={youtubeEmbed} frameborder="0" allow="autoplay"></iframe></div>})
+      this.setState({mainVideo:<div id='MainVideo'><iframe src={mainVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
     }
   }
 

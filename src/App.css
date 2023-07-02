@@ -56,13 +56,13 @@ body {
   display: flex;
   flex-direction: column;
 }
-/* #MainVideo{
+#MainVideo{
   object-fit:fill;
   display: flex;
   height: 100%;
   width: 100%;
-} */
-.MainVideo {
+}
+/* .MainVideo {
   overflow: hidden;
   width: 100%;
   aspect-ratio: 16/9;
@@ -72,7 +72,7 @@ body {
   width: 300%;
   height: 100%;
   margin-left: -100%;
-}
+} */
 #SidePanel{
   height: 100%;
   width: 35%;
