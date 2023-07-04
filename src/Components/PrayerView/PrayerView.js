@@ -1,7 +1,7 @@
 import './PrayerView.css';
 import React, { Component} from 'react';
-import logo from '../Assets/Logo.jpg'
-import { getLongDate,getCurrentTime } from '../Functions/Date Functions';
+import logo from '../../Assets/Logo.jpg'
+import { getLongDate,getCurrentTime } from '../../Functions/Date Functions';
 
 export default class PrayerView extends Component {
 

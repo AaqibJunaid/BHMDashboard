@@ -3,406 +3,77 @@ body {
   padding: 0;
   background: #222222;
 }
-#MainView{
-  display: flex;
-  height: 100vh;
-  width:100vw;
-  background: #222222;
-}
-#Status{
-  display: flex;
-  vertical-align: middle;
-  height: 4vh;
-  width: 50vw;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background: #222222;
-  font-size: 0.9vw;
-  font-family: sans-serif;
-  /* align-items: flex-start; */
-}
-#Error{
-  display: flex;
-  align-items: center;
-  vertical-align: middle;
-  height: 4vh;
-  width: 50vw;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background: #222222;
-  font-size: 0.9vw;
-  font-family: sans-serif;
-  /* align-items: flex-start; */
-}
-#MainPanel{
-  height: 100%;
-  width: 65%;
-}
-#Top{
-  display: flex;
-  height: 70vh;
-  width: 100%;
-  background-color: black;
-  justify-content: center;
-  flex-direction: column;
-}
-#Bottom{
-  height: 30vh;
-  width: 100%;
-  background-color: #222222;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-}
-#MainVideo{
-  object-fit:fill;
-  display: flex;
-  height: 100%;
-  width: 100%;
-}
-/* .MainVideo {
-  overflow: hidden;
-  width: 100%;
-  aspect-ratio: 16/9;
-  pointer-events: none;
-} 
-.MainVideo iframe {
-  width: 300%;
-  height: 100%;
-  margin-left: -100%;
-} */
-#SidePanel{
-  height: 100%;
-  width: 35%;
-  background-color:#222222;
-  align-items: center;
-  display: flex;
-  justify-content: space-evenly;
-  border-left: solid;
-  border-left-color:white ;
-  border-width: 3px;
-}
-#PrayerList{
-  display: flex;
-  height:100vh;
-  width: 100%;
-  justify-content:space-evenly;
-  align-items: center;
-  flex-direction: column;
-  background-color: #222222;
-}
-#NextPrayerArea{
-  display: flex;
-  width:32.8vw;
-  height:11.4vh;
-  background-color: darkslategray;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  border-radius: 15px;
-  border-color: white;
-  border-width: thin;
-  border-style: solid;
-}
-#NextPrayerName{
-  display: flex;
-  height: 100%;
-  width: 17vw;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding-bottom: 0.5vh;
-}
-#NextPrayer-Name{
-  display: flex;
-  height: 10vh;
-  width: 100%;
-  justify-content: center;
-  flex-direction: column;
-}
-#NextPrayer-Type{
-  display: flex;
-  height: 5vh;
-  width: 100%;
-  justify-content: center;
-  flex-direction: column;
-}
-#NextPrayerTime{
-  display: flex;
-  height: 100%;
-  width: 20vw;
-  justify-content: center;
-  align-items: center;
-  padding-right: 2%;
-}
-#NextPrayerNameLabel{
-  display: flex;
-  width: 100%;
-  height: 100%;
-  color: azure;
-  align-items: center;
-  font-size: 2.25vw;
-  font-family: sans-serif;
-  font-weight: 500;
-  justify-content: center;
-}
-#NextPrayerTypeLabel{
-  display: none;
-  width: 100%;
-  height: 100%;
-  color: azure;
-  align-items: center;
-  font-size: 2vw;
-  font-family: sans-serif;
-  font-weight: lighter;
-  justify-content: center;
-  padding-left: 9%;
-}
-#NextPrayerTimeLabel{
-  display: flex;
-  width: 100%;
-  color: ghostwhite;
-  font-size: 4vw;
-  font-family: sans-serif;
-  font-weight: lighter;
-  align-items: center;
-  justify-content: center;
-  padding-top: 2%;
-}
-#DateTimeArea{
-  display: flex;
-  width:32.8vw;
-  height:11.4vh;
-  background-color:darkslategray;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-  border-radius: 9px;
-  border-color: white;
-  border-width: thin;
-  border-style: solid;
-}
-#CurrentTime{
-  display: flex;
-  height: 100%;
-  width: 15vw;
-  justify-content: center;
-  align-items: center;
-}
-#Time{
-  display: flex;
-  width: 100%;
-  color: ghostwhite;
-  font-size: 3.5vw;
-  font-family: sans-serif;
-  font-weight: lighter;
-  justify-content: center;
-  padding-top: 2%;
-  transform: scaleY(1.01);
-}
-#CurrentDate{
-  display: flex;
-  height: 100%;
-  width: 14.6vw;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-#Date{
-  display: flex;
-  width: 100%;
-  height: 0%;
-  color: azure;
-  align-items: center;
-  font-size: 2vw;
-  font-family: sans-serif;
-  font-weight: 500;
-  justify-content: center;
-}
-.PrayerTime{
-  width: 15.7vw;
-  height: 19.8vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-style: solid;
-  border-radius: 9px;
-  border-color: white;
-  border-width: thin;
-}
-.PrayerBody{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  align-items: center;
-}
-.PrayerName{
-  display: flex;
-  font-family: system-ui;
-  font-weight: 300;
-  font-size: 4.5vh;
-  color: azure;
-  height: 5vh;
-  width: 100%;
-  text-align: center;
-  justify-content: center;
-}
-.PrayerStart{
-  display: flex;
-  font-family: sans-serif;
-  font-size: 3.3vw;
-  color: ghostwhite;
-  font-weight: 400;
-  align-items: center;
-  height: 9.1vh;
-  width: 100%;
-  text-align: center;
-  justify-content: center;
-}
-.PrayerJamat{
-  background-color: purple;
-  display: flex;
-  height: 5.5vh;
-  font-family: sans-serif;
-  font-size: 2.2vw;
-  color: azure;
-  align-items: center;
-  width: 100%;
-  text-align: center;
-  justify-content: center;
-  background-color: lightslategrey;
-  border-bottom-right-radius: 9px;
-  border-bottom-left-radius: 9px;
-  border-top-color: white;
-  border-top-style: solid;
-  border-width: thin;
-}
-#Prayers{
-  display: flex;
-  height: 70vh;
-  width: 98%;
-  justify-content: space-evenly;
-}
-.PrayerColumn{
-  justify-content: space-evenly;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 18vw;
-  align-items: center;
-}
-#BorderWhite{
-  background-color: white;
-  display: flex;
-  width: 100%;
-  height: 0.4vh;
-}
-#BorderPadding{
-  background-color: #222222;
-  display: flex;
-  width: 100%;
-  height: 2vh;
-}
-#BrandingArea{
-  display: flex;
-  height: 27vh;
-  width: 65vw;
-  flex-direction: row;
-  background-color: #222222;
-}
-#Alerts{
-  display: flex;
-  height: 5vh;
-  width: 100%;
-  flex-direction: row;
-  justify-content: space-around;
-  background-color: #222222;
-}
-#logo{
-  display: flex;
-  justify-content: center;
-  height: 25vh;
-  width: 25vw;
-  background-color: #222222;
-  align-items: center;
-  align-self: center;
-}
-.QRCode{
-  display: flex;
-  justify-content: center;
-  height: 25vh;
-  width: 15vw;
-  background-color: #222222;
-  align-items: center;
-  align-self: center;
-  padding-top: 2%;
-}
-#QRCodes{
-  display: flex;
-  justify-content: space-evenly;
-  height: 100%;
-  width: 100%;
-  background-color: #222222;
-  align-items: center;
-  flex-direction: row;
-}
-#InformationPanel{
-  display: flex;
-  flex-direction: column;
-  height: 28vh;
-  justify-content: space-around;
-  width: 30vw;
-  align-items: center;
-}
-
-#LoadScreen{
+#Main{
   display: flex;
   justify-content: center;
   height: 100vh;
   width: 100vw;
   align-items: center;
-  background-color: darkgrey;
+}
+#SelectionView{
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+}
+#SelectionTop{
+  display: flex;
+  flex-direction: row;
+  height: 45vh;
+  width: 98vw;
+  justify-content: flex-start;
+}
+#logoSelection{
+  display: flex;
+  justify-content: center;
+  height: 30vh;
+  width: 25vw;
+  background-color: #222222;
+  align-items: center;
+  align-self: center;
+}
+#SelectionAreaTitle{
+  display: flex;
+  height: 45vh;
+  width: 45vw;
+  justify-content: center;
+  font-size: 7vw;
+  align-self: center;
+  color: ghostwhite;
+  font-weight: 200;
+  align-items: center;
 }
 
-.custom-loader {
-  width:180px;
-  height:64px;
-  display: grid;
-  color: black;
+.ViewButton{
+  display: flex;
+  height: 15vh;
+  width: 40vw;
+  background: grey;
+  border-radius: 7px;
+  font-size: 5vw;
+  align-items: center;
+  justify-content: center;
+  color: ghostwhite;
+  border-color: ghostwhite;
+  border-width: thin;
+  border-style: solid;
+}
+.ViewButton:is(:hover,:focus){
+  background: darkslategray;
+  width: 40.5vw;
+}
+#ButtonArea{
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 55vh;
+  align-items: center;
+  justify-content: space-around;
+  font-family: sans-serif;
+  font-weight: 500;
+  background-color: dimgray;
 }
 
-.custom-loader:before,
-.custom-loader:after {
-  content: "";
-  grid-area: 1/1;
-  --c: linear-gradient(currentColor 0 0);
-  background: var(--c), var(--c), var(--c);
-  background-repeat: no-repeat;
-  animation: l6-1 3s infinite linear, l6-2 3s infinite linear;
-  transform: scale(var(--s,1)) translate(12px,-12px);
-}
-.custom-loader:after {
-  --s:-1;
-}
-
-@keyframes l6-1 {
-  0%,
-  3%    {background-size: 0    16px,16px 0   ,0    16px}
-  16.67%{background-size: 100% 16px,16px 0   ,0    16px}
-  33.33%{background-size: 100% 16px,16px 100%,0    16px}
-  46%,
-  54%   {background-size: 100% 16px,16px 100%,100% 16px}
-  66.67%{background-size: 0    16px,16px 100%,100% 16px}
-  83.33%{background-size: 0    16px,16px 0   ,100% 16px}
-  96%,
-  100%  {background-size: 0    16px,16px 0   ,0    16px}
-}
-
-@keyframes l6-2 {
-  0%,49.9%{background-position: 0    0,100% 0   ,100% 100%}
-  50%,100%{background-position: 100% 0,100% 100%,0    100%}
-}
