@@ -738,7 +738,11 @@ export default class MainView extends Component {
 
   getContent() {
     let images = {};
-    var r = require.context('../../Assets/Content', false, /\.(png|jpe?g|svg)$/)
+    let today = new Date()
+    let dow = getDayOfWeek(today)
+    let path = "../../Assets/Content/Sunday"+dow
+    console.log(path)
+    var r = require.context('../../Assets/Content/Sunday', false, /\.(png|jpe?g|svg)$/)
     r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
     let imgs = Object.values(images)
     this.setState({allContentImages:imgs,firstContentImage:0,contentImage:imgs[0]})

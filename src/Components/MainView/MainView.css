@@ -410,6 +410,12 @@ body {
   background-color: wheat;
 }
 
+.img{
+  display: flex;
+  height: 70vh;
+  width:100%
+  
+}
 .custom-loader {
   width:180px;
   height:64px;
