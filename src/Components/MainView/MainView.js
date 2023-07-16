@@ -736,16 +736,68 @@ export default class MainView extends Component {
     this.setState({allQRCodes:codes,firstQRCode:0,QRCodes:[codes[0],codes[1],codes[2]]})
   }
 
+  shuffleArray(array) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  }
+
   getContent() {
     let images = {};
+    let cfImages = {};
     let today = new Date()
     let dow = getDayOfWeek(today)
-    let path = "../../Assets/Content/Sunday"+dow
-    console.log(path)
-    var r = require.context('../../Assets/Content/Sunday', false, /\.(png|jpe?g|svg)$/)
+    let allImages = []
+    
+    switch (dow) {
+      case "Sunday":
+        var r = require.context('../../Assets/Content/Sunday', false, /\.(png|jpe?g|svg)$/)
+        break;
+      case "Monday":
+        var r = require.context('../../Assets/Content/Monday', false, /\.(png|jpe?g|svg)$/)
+        break;
+      case "Tuesday":
+        var r = require.context('../../Assets/Content/Tuesday', false, /\.(png|jpe?g|svg)$/)
+        break;
+      case "Wednesday":
+        var r = require.context('../../Assets/Content/Wednesday', false, /\.(png|jpe?g|svg)$/)
+        break;
+      case "Thursday":
+        var r = require.context('../../Assets/Content/Thursday', false, /\.(png|jpe?g|svg)$/)
+        break;
+      case "Friday":
+        var r = require.context('../../Assets/Content/Friday', false, /\.(png|jpe?g|svg)$/)
+        break;
+      case "Saturday":
+        var r = require.context('../../Assets/Content/Saturday', false, /\.(png|jpe?g|svg)$/)
+        break;
+    }
+
     r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
     let imgs = Object.values(images)
-    this.setState({allContentImages:imgs,firstContentImage:0,contentImage:imgs[0]})
+
+    var cf = require.context('../../Assets/Content/Common', false, /\.(png|jpe?g|svg)$/)
+    cf.keys().map((item, index) => { cfImages[item.replace('./', '')] = cf(item); });
+
+    let imgsCommon = Object.values(cfImages)
+
+    allImages = imgs
+    allImages.push(...imgsCommon)
+    allImages = this.shuffleArray(allImages)
+
+    this.setState({allContentImages:allImages,firstContentImage:0,contentImage:allImages[0]})
+
   }
 
   updateQRCodes(){
@@ -839,7 +891,6 @@ export default class MainView extends Component {
     this.callAPI()
   }
   
-
   componentDidMount(){
     // this.updatePrayerList()
     // this.syncBottomPanel()
