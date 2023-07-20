@@ -5,7 +5,7 @@ import mosqueTimes from '../../mosqueTimes.json'
 import logo from '../../Assets/Logo.jpg'
 import PrayerView from '../../Components/PrayerView/PrayerView'
 import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
-import { nodejsEndpoint, youtubeEmbed, youtubeMiniEmbed,mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
+import { nodejsEndpoint,mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from '../../Configs/prayerConfigs';
 import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames } from '../../Configs/timingConfigs';
 import { appVersion } from '../../Configs/systemConfigs';

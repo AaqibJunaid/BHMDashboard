@@ -27,7 +27,7 @@ export const prayerHoldTimesMax = {
 //     'IshaStarts':'0',
 //     'IshaJamat':'0',
 // }
-export const holdVideoTimeFrames = [{'Date':'02/07/2023','StartTime':'12:26','EndTime':'15:00'}]
+export const holdVideoTimeFrames = [{'Date':'30/07/2023','StartTime':'19:45','EndTime':'22:00'}]
 export const eventTimeFrames = [
                                     {'MainTitle':'Eid Prayer','BottomTitle':'Now in progress','Date':'28/06/2023','StartTime':'06:00','EndTime':'06:30'},
                                     {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'28/06/2023','StartTime':'06:30','EndTime':'07:00'},

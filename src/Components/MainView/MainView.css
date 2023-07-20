@@ -389,7 +389,7 @@ body {
   display: flex;
   color: white;
   align-items: center;
-  font-size: 10vw;
+  font-size: 9vw;
   width: 57vw;
   height: 20vh;
 }
@@ -399,7 +399,7 @@ body {
   color: white;
   width: 57vw;
   font-weight: 100;
-  font-size: 7vw;
+  font-size: 6vw;
   height: 15vh;
 }
 
