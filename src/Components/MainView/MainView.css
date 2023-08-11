@@ -244,7 +244,7 @@ body {
 }
 .PrayerTime{
   width: 15.7vw;
-  height: 17.8vh;
+  height: 18.5vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -304,7 +304,7 @@ body {
 }
 #Prayers{
   display: flex;
-  height: 65vh;
+  height: 66vh;
   width: 98%;
   justify-content: space-evenly;
 }

@@ -13,11 +13,11 @@ export default class PrayerView extends Component {
 
     generateBottom(){
         if (this.props.activatePrayerHold){
-            var dateArray= getLongDate().split(' ')
-            var endPortion = dateArray.slice(1,dateArray.length).join(' ')
+            var dateArray= getLongDate().split('\n')
+            // var endPortion = dateArray.slice(1,dateArray.length).join(' ')
             return(
                 <div id='BottomPanel'>
-                    <div id='TodayDate'>{dateArray[0]} <br/> {endPortion}</div>
+                    <div id='TodayDate'>{dateArray[0]}<br/>{dateArray[1]}</div>
                     <div id='Clock'>{getCurrentTime()}</div>
                 </div>
             )

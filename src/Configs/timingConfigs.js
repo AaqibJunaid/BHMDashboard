@@ -1,8 +1,8 @@
-export const arabicSwitchMax = 10
+export const arabicSwitchMax = 8
 export const qrUpdateMax = 10
 export const imgUpdateMax = 10
-export const todayPrayerDaySwitchMax=20
-export const tomorrowPrayerDaySwitchMax=10
+export const todayPrayerDaySwitchMax=24
+export const tomorrowPrayerDaySwitchMax=16
 export const prayerHoldTimesMax = {
     'FajrStarts':'2',
     'FajrJamat':'13',
@@ -12,7 +12,7 @@ export const prayerHoldTimesMax = {
     'AsrStarts':'2',
     'AsrJamat':'15',
     'MaghribStarts':'2',
-    'MaghribJamat':'14',
+    'MaghribJamat':'13',
     'IshaStarts':'2',
     'IshaJamat':'15',
 }

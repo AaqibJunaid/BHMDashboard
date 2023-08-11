@@ -108,7 +108,9 @@
   height: 40vh;
   width: 50%;
   align-items: center;
-  justify-content: center;
-  font-size: 6.5vw;
+  /* justify-content: center; */
+  font-size: 6.2vw;
   font-weight: 300;
+  transform: scaleY(1.05);
+  padding-left: 4vw;
 }
