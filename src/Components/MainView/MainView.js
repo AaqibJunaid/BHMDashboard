@@ -361,27 +361,20 @@ export default class MainView extends Component {
       if(this.state.prayerDayCounter<todayPrayerDaySwitchMax){
         timingsToDisplay = "Today"
         this.setState({prayerDayCounter:this.state.prayerDayCounter+1})
-        console.log("Todays Timings")
       }
       else{
         timingsToDisplay = "Tomorrow"
         this.setState({currentDay:"Tomorrows Prayer Times",prayerDayCounter:0})
-        console.log("Switching to tomorrows Timings")
-
       }
     }
     else{
       if(this.state.prayerDayCounter<tomorrowPrayerDaySwitchMax){
         timingsToDisplay = "Tomorrow"
         this.setState({prayerDayCounter:this.state.prayerDayCounter+1})
-        console.log("tomorrows Timings")
-
       }
       else{
         timingsToDisplay = "Today"
         this.setState({currentDay:"Todays Prayer Times",prayerDayCounter:0})
-        console.log("Switching to todays Timings")
-
       }
     }
 
@@ -411,7 +404,6 @@ export default class MainView extends Component {
       })
     }
     else{
-      console.log("about to update with tomorrows data")
       timings=this.state.tomorrowData
       if (getDayOfWeek(now)=='Thursday'){
         if (now.toLocaleTimeString()>=jummahPrayerTimes[0]){
@@ -449,11 +441,6 @@ export default class MainView extends Component {
   }
 
   updateLanguage(){
-
-    //if today is friday, when switched to tomorrow ensure label is updated from jummah to zuhur
-    //if thursday and today, then ensure when tomorrow is triggered, the label is updated to jummah
-
-    //make sure correct jummah/zuhur label is present based on the day label and day
 
     var now = new Date()
     if (this.state.switchToArabic === true){
@@ -647,9 +634,7 @@ export default class MainView extends Component {
     var prayerColours = []
     var passedCount = 0
 
-    console.log(currentPrayer)
     if (currentPrayer==='All'){
-      console.log("Null Timings")
       PrayerNames.forEach(function(prayerName){
         prayerColours.push({'Name':prayerName,'Background':'darkgray','Jamat':'lightslategrey','JamatText':'Azure','MainText':'Ghostwhite'})
       })
