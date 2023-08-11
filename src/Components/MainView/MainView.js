@@ -7,7 +7,7 @@ import PrayerView from '../../Components/PrayerView/PrayerView'
 import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
 import { nodejsEndpoint,mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from '../../Configs/prayerConfigs';
-import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames } from '../../Configs/timingConfigs';
+import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames,todayPrayerDaySwitchMax,tomorrowPrayerDaySwitchMax } from '../../Configs/timingConfigs';
 import { appVersion } from '../../Configs/systemConfigs';
 
 
@@ -21,6 +21,7 @@ export default class MainView extends Component {
       languageSwitchCouter:0,
       qrUpdateTimer:0,
       imgUpdateTimer:0,
+      prayerDayCounter:0,
       todayData:mosqueTimes.filter( element => element.Date === getTodaysDate())[0],
       tomorrowData:this.getTomorrowData(),
       lastKnownData:{},
@@ -42,7 +43,8 @@ export default class MainView extends Component {
       holdPrayerType:'',
       elipsisCounter:0,
       mainVideo: <div id='MainVideo'><iframe src={mainVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>,
-      miniPrayerViewData:{'Name':'','Text':''}
+      miniPrayerViewData:{'Name':'','Text':''},
+      currentDay:"Todays Prayer Times"
     }
   }
   
@@ -354,43 +356,175 @@ export default class MainView extends Component {
   }
 
   updatePrayerList(){
-    var todayTimes=this.state.todayData
-    var now = new Date()
-    
-    if (getDayOfWeek(now)=='Friday'){
-      if (now.toLocaleTimeString()>=jummahPrayerTimes[0]){
-        todayTimes['Zuhur Jamat']=jummahPrayerTimes[1]
+    var timingsToDisplay = ""
+    if(this.state.currentDay=="Todays Prayer Times"){
+      if(this.state.prayerDayCounter<todayPrayerDaySwitchMax){
+        timingsToDisplay = "Today"
+        this.setState({prayerDayCounter:this.state.prayerDayCounter+1})
+        console.log("Todays Timings")
       }
       else{
-        todayTimes['Zuhur Jamat']=jummahPrayerTimes[0]
+        timingsToDisplay = "Tomorrow"
+        this.setState({currentDay:"Tomorrows Prayer Times",prayerDayCounter:0})
+        console.log("Switching to tomorrows Timings")
+
       }
-      this.setState({todayData:todayTimes})
-      console.log(todayTimes)
+    }
+    else{
+      if(this.state.prayerDayCounter<tomorrowPrayerDaySwitchMax){
+        timingsToDisplay = "Tomorrow"
+        this.setState({prayerDayCounter:this.state.prayerDayCounter+1})
+        console.log("tomorrows Timings")
+
+      }
+      else{
+        timingsToDisplay = "Today"
+        this.setState({currentDay:"Todays Prayer Times",prayerDayCounter:0})
+        console.log("Switching to todays Timings")
+
+      }
+    }
+
+    var timings = []
+    var now = new Date()
+
+    if(timingsToDisplay=='Today'){
+      timings=this.state.todayData
+      if (getDayOfWeek(now)=='Friday'){
+        if (now.toLocaleTimeString()>=jummahPrayerTimes[0]){
+          timings['Zuhur Jamat']=jummahPrayerTimes[1]
+        }
+        else{
+          timings['Zuhur Jamat']=jummahPrayerTimes[0]
+        }
+        this.setState({todayData:timings})
+      }
+      var currentPrayer=this.getCurrentPrayer(timings)
+
+      var backgroundColours=this.getBackgroundColours(currentPrayer.Name)
+      backgroundColours.forEach(function(prayer){
+          document.getElementById(prayer.Name).style.backgroundColor=prayer.Background
+          document.getElementById(prayer.Name+'Jamat').style.backgroundColor=prayer.Jamat
+          document.getElementById(prayer.Name+'Label').style.color=prayer.MainText
+          document.getElementById(prayer.Name+'Start').style.color=prayer.MainText
+          document.getElementById(prayer.Name+'Jamat').style.color=prayer.JamatText
+      })
+    }
+    else{
+      console.log("about to update with tomorrows data")
+      timings=this.state.tomorrowData
+      if (getDayOfWeek(now)=='Thursday'){
+        if (now.toLocaleTimeString()>=jummahPrayerTimes[0]){
+          timings['Zuhur Jamat']=jummahPrayerTimes[1]
+        }
+        else{
+          timings['Zuhur Jamat']=jummahPrayerTimes[0]
+        }
+      }
+      this.setState({tomorrowData:timings})
+
+      var backgroundColours=this.getBackgroundColours("All")
+      backgroundColours.forEach(function(prayer){
+          document.getElementById(prayer.Name).style.backgroundColor=prayer.Background
+          document.getElementById(prayer.Name+'Jamat').style.backgroundColor=prayer.Jamat
+          document.getElementById(prayer.Name+'Label').style.color=prayer.MainText
+          document.getElementById(prayer.Name+'Start').style.color=prayer.MainText
+          document.getElementById(prayer.Name+'Jamat').style.color=prayer.JamatText
+      })
+
     }
     
     PrayerNames.forEach(function(prayerName) {
       if (prayerName ==='Sunrise'){
-        document.getElementById('SunriseStart').innerText=(todayTimes[prayerName]).substring(0,5)
+        document.getElementById('SunriseStart').innerText=(timings[prayerName]).substring(0,5)
       }
       else{
-        document.getElementById(prayerName+'Start').innerText=(todayTimes[prayerName+' Start']).substring(0,5)
-        document.getElementById(prayerName+'Jamat').innerText=(todayTimes[prayerName+' Jamat']).substring(0,5)
+        document.getElementById(prayerName+'Start').innerText=(timings[prayerName+' Start']).substring(0,5)
+        document.getElementById(prayerName+'Jamat').innerText=(timings[prayerName+' Jamat']).substring(0,5)
       }
     })
 
-    var currentPrayer=this.getCurrentPrayer(todayTimes)
 
-    var backgroundColours=this.getBackgroundColours(currentPrayer.Name)
-    backgroundColours.forEach(function(prayer){
-        document.getElementById(prayer.Name).style.backgroundColor=prayer.Background
-        document.getElementById(prayer.Name+'Jamat').style.backgroundColor=prayer.Jamat
-        document.getElementById(prayer.Name+'Label').style.color=prayer.MainText
-        document.getElementById(prayer.Name+'Start').style.color=prayer.MainText
-        document.getElementById(prayer.Name+'Jamat').style.color=prayer.JamatText
-    })
+ 
   }
 
   updateLanguage(){
+
+    //if today is friday, when switched to tomorrow ensure label is updated from jummah to zuhur
+    //if thursday and today, then ensure when tomorrow is triggered, the label is updated to jummah
+
+    //make sure correct jummah/zuhur label is present based on the day label and day
+
+    var now = new Date()
+    if (this.state.switchToArabic === true){
+      for (var i=0;i<PrayerNames.length;i++){
+        if(this.state.currentDay=="Todays Prayer Times"){
+          if (getDayOfWeek(now)=='Friday' && PrayerNames[i]=='Zuhur'){
+            document.getElementById('ZuhurLabel').innerText='جمعة'
+          }
+          else{
+            document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
+          }
+        }
+        else{
+          if (getDayOfWeek(now)=='Thursday'&& PrayerNames[i]=='Zuhur'){
+            document.getElementById('ZuhurLabel').innerText='جمعة'
+          }
+          else{
+            document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
+          }
+        }
+      }      
+      if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
+        document.getElementById('Date').innerText=getLongDate()
+        document.getElementById('Date').style.fontSize='1.9vw'
+        document.getElementById('Date').style.paddingLeft='3%'
+        document.getElementById('Date').style.transform="scaleY(1)"
+      }
+      else{
+        document.getElementById('Date').innerText=this.state.currentIslamicDate
+        document.getElementById('Date').style.fontSize='1.9vw'
+        document.getElementById('Date').style.transform="scaleY(1)"
+        document.getElementById('Date').style.paddingLeft='3%'
+      }
+    }
+    else{
+      var day = this.state.currentDay
+
+      PrayerNames.forEach(function (prayer){
+        if(day=="Todays Prayer Times"){
+          if (getDayOfWeek(now)=='Friday' && prayer =='Zuhur'){
+            document.getElementById('ZuhurLabel').innerText='Jummah'
+          }
+          else{
+            document.getElementById(prayer+'Label').innerText=prayer
+          }
+        }
+        else{
+          if (getDayOfWeek(now)=='Thursday' && prayer =='Zuhur'){
+            document.getElementById('ZuhurLabel').innerText='Jummah'
+          }
+          else{
+            document.getElementById(prayer+'Label').innerText=prayer
+          }
+        }
+      })
+
+      document.getElementById('Date').innerText=getLongDate()
+      document.getElementById('Date').style.fontSize='1.9vw'
+      document.getElementById('Date').style.paddingLeft='3%'
+      document.getElementById('Date').style.transform="scaleY(1)"
+    }
+
+    if(this.state.languageSwitchCouter === arabicSwitchMax){
+      this.setState({switchToArabic:!this.state.switchToArabic,languageSwitchCouter:0})
+    }
+    else{
+      this.setState({languageSwitchCouter:this.state.languageSwitchCouter+1})
+    }
+  }
+
+  updateLanguage1(){
     var now = new Date()
     if (this.state.switchToArabic === true){
       for (var i=0;i<PrayerNames.length;i++){
@@ -513,7 +647,9 @@ export default class MainView extends Component {
     var prayerColours = []
     var passedCount = 0
 
+    console.log(currentPrayer)
     if (currentPrayer==='All'){
+      console.log("Null Timings")
       PrayerNames.forEach(function(prayerName){
         prayerColours.push({'Name':prayerName,'Background':'darkgray','Jamat':'lightslategrey','JamatText':'Azure','MainText':'Ghostwhite'})
       })
@@ -941,6 +1077,7 @@ export default class MainView extends Component {
             </div>
             <div id="SidePanel">
               <div id="PrayerList">
+                <div id="DayPrayer">{this.state.currentDay}</div>
                 <div id='Prayers'>
                   < div id='Column1' className='PrayerColumn'>
                     {this.makePrayerList('Column1')}
