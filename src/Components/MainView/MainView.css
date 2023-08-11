@@ -226,7 +226,7 @@ body {
   font-size: 2vw;
   font-family: sans-serif;
   font-weight: 500;
-  justify-content: center;
+  /* justify-content: center; */
 }
 .PrayerTime{
   width: 15.7vw;

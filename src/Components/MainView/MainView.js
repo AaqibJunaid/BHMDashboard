@@ -403,15 +403,15 @@ export default class MainView extends Component {
       }      
       if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
         document.getElementById('Date').innerText=getLongDate()
-        document.getElementById('Date').style.fontSize='2vw'
+        document.getElementById('Date').style.fontSize='1.9vw'
         document.getElementById('Date').style.paddingLeft='3%'
         document.getElementById('Date').style.transform="scaleY(1)"
       }
       else{
         document.getElementById('Date').innerText=this.state.currentIslamicDate
-        document.getElementById('Date').style.fontSize='1.7vw'
-        document.getElementById('Date').style.transform="scaleY(1.15)"
-        document.getElementById('Date').style.paddingLeft='1%'
+        document.getElementById('Date').style.fontSize='1.9vw'
+        document.getElementById('Date').style.transform="scaleY(1)"
+        document.getElementById('Date').style.paddingLeft='3%'
       }
     }
     else{
@@ -424,7 +424,7 @@ export default class MainView extends Component {
         }
       })
       document.getElementById('Date').innerText=getLongDate()
-      document.getElementById('Date').style.fontSize='2vw'
+      document.getElementById('Date').style.fontSize='1.9vw'
       document.getElementById('Date').style.paddingLeft='3%'
       document.getElementById('Date').style.transform="scaleY(1)"
     }

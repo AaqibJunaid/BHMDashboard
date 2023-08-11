@@ -90,9 +90,34 @@ export function getDaySuffix(day) {
     const today = new Date();
     const day = today.getDate();
     var suffix = getDaySuffix(day);
-    const month = today.toLocaleString('default', { month: 'long' });
-    const year = today.getFullYear();
+    var month = today.toLocaleString('default', { month: 'long' });
+    var year = today.getFullYear();
+    var formattedDate =''
 
-    const formattedDate = getDayOfWeek(today) + '\n ' + day + suffix + ' ' + month + ' ' + year;
+    // if (month=='January'){
+    //   formattedDate = getDayOfWeek(today) + ' ' + day + suffix +'\n' + month + ' ' + year;
+    // }
+    // else if (month=='February'){
+    //   formattedDate = getDayOfWeek(today) + ' ' + day + suffix +'\n' + month + ' ' + year;
+    // }
+    // else if (month=='September'){
+    //   formattedDate = getDayOfWeek(today) + ' ' + day + suffix +'\n' + month + ' ' + year;
+    // }
+    // else if (month=='October'){
+    //   formattedDate = getDayOfWeek(today) + ' ' + day + suffix +'\n' + month + ' ' + year;
+    // }
+    // else if (month=='November'){
+    //   formattedDate = getDayOfWeek(today) + ' ' + day + suffix +'\n' + month + ' ' + year;
+    // }
+    // else if (month=='December'){
+    //   formattedDate = getDayOfWeek(today) + ' ' + day + suffix +'\n' + month + ' ' + year;
+    // }
+    // else{
+    //   formattedDate = getDayOfWeek(today) + '\n ' + day + suffix + ' ' + month + ' ' + year;
+    // }
+
+    formattedDate = getDayOfWeek(today) + ' ' + day + suffix +'\n' + month + ' ' + year;
+
+
     return formattedDate;
   }
