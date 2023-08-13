@@ -15,7 +15,7 @@ export default class MainView extends Component {
   constructor(props){
     super(props);
     this.state ={
-      prayers:{'Fajr':'فجر','Sunrise':'شروق','Zuhur':'زهور','Asr':'عصر','Maghrib':'مغرب','Isha':'عشاء'},
+      prayers:{'Fajr':'فجر','Sunrise':'شروق','Zuhur':'ظهر','Asr':'عصر','Maghrib':'مغرب','Isha':'عشاء'},
       currentDynamicArea:'Main',
       switchToArabic:false,
       languageSwitchCouter:0,
@@ -431,8 +431,10 @@ export default class MainView extends Component {
         document.getElementById('SunriseStart').innerText=(timings[prayerName]).substring(0,5)
       }
       else{
-        document.getElementById(prayerName+'Start').innerText=(timings[prayerName+' Start']).substring(0,5)
-        document.getElementById(prayerName+'Jamat').innerText=(timings[prayerName+' Jamat']).substring(0,5)
+        // document.getElementById(prayerName+'Start').innerText=(timings[prayerName+' Start']).substring(0,5)
+        // document.getElementById(prayerName+'Jamat').innerText=(timings[prayerName+' Jamat']).substring(0,5)
+        document.getElementById(prayerName+'Start').innerText=(timings[prayerName+' Jamat']).substring(0,5)
+        document.getElementById(prayerName+'Jamat').innerText=(timings[prayerName+' Start']).substring(0,5)
       }
     })
 
