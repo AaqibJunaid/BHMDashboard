@@ -7,7 +7,7 @@ import PrayerView from '../../Components/PrayerView/PrayerView'
 import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
 import { nodejsEndpoint,mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from '../../Configs/prayerConfigs';
-import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames,todayPrayerDaySwitchMax,tomorrowPrayerDaySwitchMax } from '../../Configs/timingConfigs';
+import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames,todayPrayerDaySwitchMax,tomorrowPrayerDaySwitchMax,duaUpdateMax } from '../../Configs/timingConfigs';
 import { appVersion } from '../../Configs/systemConfigs';
 
 
@@ -22,6 +22,7 @@ export default class MainView extends Component {
       qrUpdateTimer:0,
       imgUpdateTimer:0,
       prayerDayCounter:0,
+      duaUpdateTimer:duaUpdateMax,
       todayData:mosqueTimes.filter( element => element.Date === getTodaysDate())[0],
       tomorrowData:this.getTomorrowData(),
       lastKnownData:{},
@@ -33,6 +34,7 @@ export default class MainView extends Component {
       allQRCodes:[],
       QRCodes : [],
       firstQRCode:0,
+      firstDuaImage:0,
       allContentImages:[],
       contentImage : "",
       firstContentImage:0,
@@ -44,7 +46,8 @@ export default class MainView extends Component {
       elipsisCounter:0,
       mainVideo: <div id='MainVideo'><iframe src={mainVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>,
       miniPrayerViewData:{'Name':'','Text':''},
-      currentDay:"Todays Prayer Times"
+      currentDay:"Todays Prayer Times",
+      allDuaImages:[]
     }
   }
   
@@ -251,7 +254,6 @@ export default class MainView extends Component {
 
             this.updatePrayerList()
             this.syncBottomPanel()
-            this.handleVideo()
             this.setState({elipsisCounter:0})
 
             if(this.state.qrUpdateTimer==qrUpdateMax){
@@ -287,10 +289,16 @@ export default class MainView extends Component {
           document.getElementById('MainVideo').style.display='flex'
           document.getElementById('ImageContent').style.display='none'
         }
+
+        if(this.props.MosqueArea == 'Main Hall'){
+          this.handleMediaPics()
+        }
+        else{
+          this.handleVideo()
+        }
         
         this.updatePrayerList()
         this.syncBottomPanel()
-        this.handleVideo()
 
         this.setState({elipsisCounter:0})
 
@@ -301,15 +309,50 @@ export default class MainView extends Component {
         else{
           this.setState({qrUpdateTimer:this.state.qrUpdateTimer+1})
         }
+      }
+    }
+  }
 
-        if(this.state.imgUpdateTimer==imgUpdateMax){
-          this.updateContent()
-          this.setState({imgUpdateTimer:0})
-        }
-        else{
-          this.setState({imgUpdateTimer:this.state.imgUpdateTimer+1})
-        }
+  handleMediaPics(){
 
+    var todayHolds = []
+    var todayTimes = this.state.todayData
+    const now = new Date()
+
+    PrayerNames.forEach((prayer)=>{
+      if(prayer !== 'Sunrise'){
+        var jamatTime = new Date(now.toDateString() + ' ' + (todayTimes[prayer+' Jamat']))
+        var StartTime = new Date(jamatTime.getTime()+prayerHoldTimesMax[prayer+'Jamat']*60000)
+        var EndTime = new Date(jamatTime.getTime()+((Number(prayerHoldTimesMax[prayer+'Jamat'])+8)*60000))
+        todayHolds.push({StartTime:StartTime.toLocaleTimeString(),'EndTime':EndTime.toLocaleTimeString()})
+      }
+    })
+
+    var switchToDua = false
+
+    for (var i = 0;i<todayHolds.length;i++){
+      if(now.toLocaleTimeString()>= todayHolds[i].StartTime && now.toLocaleTimeString()<= todayHolds[i].EndTime){
+        switchToDua=true
+        break;
+      }
+    }
+
+    if (switchToDua){
+      if (this.state.duaUpdateTimer==duaUpdateMax){
+        this.updateDua()
+        this.setState({duaUpdateTimer:0})
+      }
+      else{
+        this.setState({duaUpdateTimer:this.state.duaUpdateTimer+1})
+      }
+    }
+    else{
+      if(this.state.imgUpdateTimer==imgUpdateMax){
+        this.updateContent()
+        this.setState({imgUpdateTimer:0})
+      }
+      else{
+        this.setState({imgUpdateTimer:this.state.imgUpdateTimer+1})
       }
     }
   }
@@ -919,7 +962,12 @@ export default class MainView extends Component {
     allImages.push(...imgsCommon)
     allImages = this.shuffleArray(allImages)
 
-    this.setState({allContentImages:allImages,firstContentImage:0,contentImage:allImages[0]})
+    let duaImages = {};
+    var duaFolder = require.context('../../Assets/Content/Dua', false, /\.(png|jpe?g|svg)$/)
+    duaFolder.keys().map((item, index) => { duaImages[item.replace('./', '')] = duaFolder(item); });
+    let duas = Object.values(duaImages)
+
+    this.setState({allContentImages:allImages,duaImages:duas,firstContentImage:0,contentImage:allImages[0]})
 
   }
 
@@ -963,6 +1011,16 @@ export default class MainView extends Component {
     else{
       var counter = this.state.firstContentImage + 1
       this.setState({firstContentImage:counter,contentImage:this.state.allContentImages[counter]})
+    }
+  }
+
+  updateDua(){
+    if(this.state.firstDuaImage == this.state.duaImages.length-1){
+      this.setState({firstDuaImage:0,contentImage:this.state.duaImages[0]})
+    }
+    else{
+      var counter = this.state.firstDuaImage + 1
+      this.setState({firstDuaImage:counter,contentImage:this.state.duaImages[counter]})
     }
   }
 

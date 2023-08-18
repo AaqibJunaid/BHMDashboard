@@ -1,20 +1,21 @@
 export const arabicSwitchMax = 8
 export const qrUpdateMax = 10
-export const imgUpdateMax = 10
+export const imgUpdateMax = 20
+export const duaUpdateMax = 30
 export const todayPrayerDaySwitchMax=24
 export const tomorrowPrayerDaySwitchMax=16
 export const prayerHoldTimesMax = {
     'FajrStarts':'2',
-    'FajrJamat':'13',
+    'FajrJamat':'9',
     'SunriseStarts':'2',
     'ZuhurStarts':'2',
-    'ZuhurJamat':'15',
+    'ZuhurJamat':'10',
     'AsrStarts':'2',
-    'AsrJamat':'15',
+    'AsrJamat':'10',
     'MaghribStarts':'2',
-    'MaghribJamat':'13',
+    'MaghribJamat':'10',
     'IshaStarts':'2',
-    'IshaJamat':'15',
+    'IshaJamat':'10',
 }
 // export const prayerHoldTimesMax = {
 //     'FajrStarts':'0',
