@@ -9,13 +9,13 @@ export const prayerHoldTimesMax = {
     'FajrJamat':'9',
     'SunriseStarts':'2',
     'ZuhurStarts':'2',
-    'ZuhurJamat':'10',
+    'ZuhurJamat':'12',
     'AsrStarts':'2',
-    'AsrJamat':'10',
+    'AsrJamat':'12',
     'MaghribStarts':'2',
-    'MaghribJamat':'10',
+    'MaghribJamat':'12',
     'IshaStarts':'2',
-    'IshaJamat':'10',
+    'IshaJamat':'12',
 }
 // export const prayerHoldTimesMax = {
 //     'FajrStarts':'0',

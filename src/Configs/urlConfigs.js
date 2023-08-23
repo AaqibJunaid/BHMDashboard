@@ -1,7 +1,7 @@
 const youtubeID = 'mx4rf9DCuzg'
 const youtubeMiniID='PZlpsyNqNJQ'
-const mainVideoID='855648123'
-const shortVideoID='855648109'
+const mainVideoID='857134683'
+const shortVideoID='857134657'
 
 
 
