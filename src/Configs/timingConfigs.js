@@ -2,8 +2,8 @@ export const arabicSwitchMax = 8
 export const qrUpdateMax = 10
 export const imgUpdateMax = 20
 export const duaUpdateMax = 30
-export const todayPrayerDaySwitchMax=24
-export const tomorrowPrayerDaySwitchMax=16
+export const todayPrayerDaySwitchMax=30
+export const tomorrowPrayerDaySwitchMax=15
 export const prayerHoldTimesMax = {
     'FajrStarts':'2',
     'FajrJamat':'9',

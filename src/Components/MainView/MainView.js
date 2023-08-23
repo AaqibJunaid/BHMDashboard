@@ -47,7 +47,8 @@ export default class MainView extends Component {
       mainVideo: <div id='MainVideo'><iframe src={mainVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>,
       miniPrayerViewData:{'Name':'','Text':''},
       currentDay:"Todays Prayer Times",
-      allDuaImages:[]
+      allDuaImages:[],
+      blockArabicSwitch:true
     }
   }
   
@@ -365,7 +366,7 @@ export default class MainView extends Component {
 
     this.setState({nextPrayer:{'EnglishName':nextPrayerName,'ArabicName':this.state.prayers[nextPrayerName],'PrayerType':nextPrayerType,'Difference':displayTime}})
 
-    if(this.state.switchToArabic){
+    if(this.state.switchToArabic && this.state.blockArabicSwitch==false){
       var arabicName;
 
       for (var i=0;i<PrayerNames.length;i++){
@@ -489,21 +490,23 @@ export default class MainView extends Component {
 
     var now = new Date()
     if (this.state.switchToArabic === true){
-      for (var i=0;i<PrayerNames.length;i++){
-        if(this.state.currentDay=="Todays Prayer Times"){
-          if (getDayOfWeek(now)=='Friday' && PrayerNames[i]=='Zuhur'){
-            document.getElementById('ZuhurLabel').innerText='جمعة'
+      if(this.state.blockArabicSwitch == false){
+        for (var i=0;i<PrayerNames.length;i++){
+          if(this.state.currentDay=="Todays Prayer Times"){
+            if (getDayOfWeek(now)=='Friday' && PrayerNames[i]=='Zuhur'){
+              document.getElementById('ZuhurLabel').innerText='جمعة'
+            }
+            else{
+              document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
+            }
           }
           else{
-            document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
-          }
-        }
-        else{
-          if (getDayOfWeek(now)=='Thursday'&& PrayerNames[i]=='Zuhur'){
-            document.getElementById('ZuhurLabel').innerText='جمعة'
-          }
-          else{
-            document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
+            if (getDayOfWeek(now)=='Thursday'&& PrayerNames[i]=='Zuhur'){
+              document.getElementById('ZuhurLabel').innerText='جمعة'
+            }
+            else{
+              document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
+            }
           }
         }
       }      
@@ -542,53 +545,6 @@ export default class MainView extends Component {
         }
       })
 
-      document.getElementById('Date').innerText=getLongDate()
-      document.getElementById('Date').style.fontSize='1.9vw'
-      document.getElementById('Date').style.paddingLeft='3%'
-      document.getElementById('Date').style.transform="scaleY(1)"
-    }
-
-    if(this.state.languageSwitchCouter === arabicSwitchMax){
-      this.setState({switchToArabic:!this.state.switchToArabic,languageSwitchCouter:0})
-    }
-    else{
-      this.setState({languageSwitchCouter:this.state.languageSwitchCouter+1})
-    }
-  }
-
-  updateLanguage1(){
-    var now = new Date()
-    if (this.state.switchToArabic === true){
-      for (var i=0;i<PrayerNames.length;i++){
-        if (getDayOfWeek(now)=='Friday'){
-          document.getElementById('ZuhurLabel').innerText='جمعة'
-        }
-        else{
-          document.getElementById(PrayerNames[i]+'Label').innerText=arabicPrayerNames[i]
-        }
-      }      
-      if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
-        document.getElementById('Date').innerText=getLongDate()
-        document.getElementById('Date').style.fontSize='1.9vw'
-        document.getElementById('Date').style.paddingLeft='3%'
-        document.getElementById('Date').style.transform="scaleY(1)"
-      }
-      else{
-        document.getElementById('Date').innerText=this.state.currentIslamicDate
-        document.getElementById('Date').style.fontSize='1.9vw'
-        document.getElementById('Date').style.transform="scaleY(1)"
-        document.getElementById('Date').style.paddingLeft='3%'
-      }
-    }
-    else{
-      PrayerNames.forEach(function (prayer){
-        if (getDayOfWeek(now)=='Friday'){
-          document.getElementById('ZuhurLabel').innerText='Jummah'
-        }
-        else{
-          document.getElementById(prayer+'Label').innerText=prayer
-        }
-      })
       document.getElementById('Date').innerText=getLongDate()
       document.getElementById('Date').style.fontSize='1.9vw'
       document.getElementById('Date').style.paddingLeft='3%'
