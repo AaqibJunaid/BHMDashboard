@@ -1,4 +1,4 @@
-export const arabicSwitchMax = 8
+export const arabicSwitchMax = 20
 export const qrUpdateMax = 10
 export const imgUpdateMax = 20
 export const duaUpdateMax = 30

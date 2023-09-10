@@ -13,14 +13,26 @@ export default class PrayerView extends Component {
 
     generateBottom(){
         if (this.props.activatePrayerHold){
-            var dateArray= getLongDate().split('\n')
-            // var endPortion = dateArray.slice(1,dateArray.length).join(' ')
-            return(
-                <div id='BottomPanel'>
-                    <div id='TodayDate'>{dateArray[0]}<br/>{dateArray[1]}</div>
-                    <div id='Clock'>{getCurrentTime()}</div>
-                </div>
-            )
+            if(this.props.hijriDateFlag==true && this.props.hijriDate!=="Unkown" && this.props.hijriDate!==""){
+
+                var dateArray= this.props.hijriDate.split('\n')
+                return(
+                    <div id='BottomPanel'>
+                        <div id='TodayDate'>{dateArray[0]}<br/>{dateArray[1]}</div>
+                        <div id='Clock'>{getCurrentTime()}</div>
+                    </div>
+                )
+            }
+            else{
+                var dateArray= getLongDate().split('\n')
+                // var endPortion = dateArray.slice(1,dateArray.length).join(' ')
+                return(
+                    <div id='BottomPanel'>
+                        <div id='TodayDate'>{dateArray[0]}<br/>{dateArray[1]}</div>
+                        <div id='Clock'>{getCurrentTime()}</div>
+                    </div>
+                )
+            }
         }
         else{
             var seconds=this.props.CountDown.substr(0,2)

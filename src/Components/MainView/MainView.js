@@ -125,6 +125,19 @@ export default class MainView extends Component {
     }
   }
 
+  calculateForbiddenTimes(){
+    var forbiddenPeriods=[]
+    var todayTimes = this.state.todayData
+    const now = new Date()
+
+    var prayerTime = new Date(now.toDateString() + ' ' + (todayTimes['Sunrise']))
+    var StartTime = new Date(prayerTime.getTime())
+    var EndTime = new Date(prayerTime.getTime()+20*60000)
+    forbiddenPeriods.push({'MainTitle':'Attention','BottomTitle':'Please Refrain from Praying for ','ViewType':'Countdown','StartTime':StartTime.toLocaleTimeString(),'EndTime':EndTime.toLocaleTimeString()})
+
+    return forbiddenPeriods
+  }
+
   calculatePrayerViewTimings(){
     var prayerViewTimes=[]
     var todayTimes = this.state.todayData
@@ -137,13 +150,13 @@ export default class MainView extends Component {
           var jummahStartTime = new Date(jamatTime.getTime()-1*60000)
           var jumaahStartEndTime = new Date(jamatTime.getTime())
           var jummahKhutbahStartTime = new Date(jamatTime.getTime()-1000)
-          var jumaahKhutbahEndTime = new Date(jamatTime.getTime()+15*60000)
-          var jummahJamatStartTime = new Date(jamatTime.getTime()+(15*60000)-1000)
+          var jumaahKhutbahEndTime = new Date(jamatTime.getTime()+20*60000)
+          var jummahJamatStartTime = new Date(jamatTime.getTime()+(20*60000)-1000)
           var jumaahJamatEndTime = new Date(jamatTime.getTime()+30*60000)
           var jummahNumber = ([i]+1==1)?'1st':'2nd'
           prayerViewTimes.push({'MainTitle':jummahNumber+' Jummah','BottomTitle':'Starts in','ViewType':'Countdown','StartTime':jummahStartTime.toLocaleTimeString(),'EndTime':jumaahStartEndTime.toLocaleTimeString()})
-          prayerViewTimes.push({'MainTitle':jummahNumber+' Jummah','BottomTitle':'Khutbah in progress','ViewType':'Static','StartTime':jummahKhutbahStartTime.toLocaleTimeString(),'EndTime':jumaahKhutbahEndTime.toLocaleTimeString()})
-          prayerViewTimes.push({'MainTitle':jummahNumber+' Jummah','BottomTitle':'Jamat in progress','ViewType':'Static','StartTime':jummahJamatStartTime.toLocaleTimeString(),'EndTime':jumaahJamatEndTime.toLocaleTimeString()})
+          prayerViewTimes.push({'MainTitle':jummahNumber+' Jummah','BottomTitle':'Khutbah in Progress','ViewType':'Static','StartTime':jummahKhutbahStartTime.toLocaleTimeString(),'EndTime':jumaahKhutbahEndTime.toLocaleTimeString()})
+          prayerViewTimes.push({'MainTitle':jummahNumber+' Jummah','BottomTitle':'Jamat in Progress','ViewType':'Static','StartTime':jummahJamatStartTime.toLocaleTimeString(),'EndTime':jumaahJamatEndTime.toLocaleTimeString()})
         }
 
       }
@@ -202,32 +215,76 @@ export default class MainView extends Component {
     if(this.state.dataStatus!=="Initialising Application..."){
       
       var prayerViewTimings = this.calculatePrayerViewTimings()
+      var forbiddenPeriods = this.calculateForbiddenTimes()
       var matchFound = false
+      var forbiddenPeriodFound = false
       const now = new Date()
       var holdScreen = false
 
-      for (var i=0;i<prayerViewTimings.length;i++){
+      for (var i=0;i<forbiddenPeriods.length;i++){
+        if(now.toLocaleTimeString()>= forbiddenPeriods[i].StartTime && now.toLocaleTimeString()< forbiddenPeriods[i].EndTime ){
 
-        if(now.toLocaleTimeString()>= prayerViewTimings[i].StartTime && now.toLocaleTimeString()< prayerViewTimings[i].EndTime ){
-          matchFound=true
-
-          if(prayerViewTimings[i].ViewType=='Static'){
-            this.setState({nextPrayer:{'EnglishName':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle,'Difference':getCurrentTime()},activatePrayerHold:true})
-            this.setState({miniPrayerViewData:{'Name':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle}})
-            holdScreen=true
-          }
-          else{
-            var prayerTime = new Date(now.toDateString() + ' ' + prayerViewTimings[i].EndTime)
-            var prayer = {'Name':prayerViewTimings[i].MainTitle,"Type": 'Starts','Time':prayerTime}
-            var timeDiff = this.nextPrayerTimeDifference(prayer)
-            this.setState({nextPrayer:{'EnglishName':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle+this.handleProgress(),'Difference':timeDiff},activatePrayerHold:false})
-            this.setState({miniPrayerViewData:{'Name':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle}})
-          }
+          forbiddenPeriodFound=true
+          var prayerTime = new Date(now.toDateString() + ' ' + forbiddenPeriods[i].EndTime)
+          var prayer = {'Name':forbiddenPeriods[i].MainTitle,"Type": 'Starts','Time':prayerTime}
+          var timeDiff = this.nextPrayerTimeDifference(prayer)
+          this.setState({nextPrayer:{'EnglishName':forbiddenPeriods[i].MainTitle,'Text':forbiddenPeriods[i].BottomTitle+this.handleProgress(),'Difference':timeDiff},activatePrayerHold:false})
+          this.setState({miniPrayerViewData:{'Name':forbiddenPeriods[i].MainTitle,'Text':forbiddenPeriods[i].BottomTitle +timeDiff}})
           break;
         }
       }
-      
-      if(matchFound){
+
+      if (!forbiddenPeriodFound || forbiddenPeriodFound && this.props.MosqueArea !== "Main Hall"){
+        for (var i=0;i<prayerViewTimings.length;i++){
+          if(now.toLocaleTimeString()>= prayerViewTimings[i].StartTime && now.toLocaleTimeString()< prayerViewTimings[i].EndTime ){
+            matchFound=true
+  
+            if(prayerViewTimings[i].ViewType=='Static'){
+              this.setState({nextPrayer:{'EnglishName':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle,'Difference':getCurrentTime()},activatePrayerHold:true})
+              this.setState({miniPrayerViewData:{'Name':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle}})
+              holdScreen=true
+            }
+            else{
+              var prayerTime = new Date(now.toDateString() + ' ' + prayerViewTimings[i].EndTime)
+              var prayer = {'Name':prayerViewTimings[i].MainTitle,"Type": 'Starts','Time':prayerTime}
+              var timeDiff = this.nextPrayerTimeDifference(prayer)
+              this.setState({nextPrayer:{'EnglishName':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle+this.handleProgress(),'Difference':timeDiff},activatePrayerHold:false})
+              this.setState({miniPrayerViewData:{'Name':prayerViewTimings[i].MainTitle,'Text':prayerViewTimings[i].BottomTitle}})
+            }
+            break;
+          }
+        }
+      }
+
+      if (forbiddenPeriodFound && this.props.MosqueArea == 'Main Hall'){
+        document.getElementById('MainView').style.display='flex'
+        document.getElementById('MiniPrayerView').style.display='flex'
+        document.getElementById('PrayerViewContainer').style.display='none'
+        document.getElementById('PrayerView').style.display='none'
+        document.getElementById('MainVideo').style.display='none'
+        document.getElementById('ImageContent').style.display='none'
+
+        this.updatePrayerList()
+        this.syncBottomPanel()
+        this.setState({elipsisCounter:0})
+
+        if(this.state.qrUpdateTimer==qrUpdateMax){
+          this.updateQRCodes()
+          this.setState({qrUpdateTimer:0})
+        }
+        else{
+          this.setState({qrUpdateTimer:this.state.qrUpdateTimer+1})
+        }
+
+        if(this.state.imgUpdateTimer==imgUpdateMax){
+          this.updateContent()
+          this.setState({imgUpdateTimer:0})
+        }
+        else{
+          this.setState({imgUpdateTimer:this.state.imgUpdateTimer+1})
+        }
+      }
+      else if(matchFound){
         if(this.props.MosqueArea == 'Main Hall'){
           document.getElementById('MainView').style.display='none'
           document.getElementById('PrayerViewContainer').style.display='flex'
@@ -235,6 +292,7 @@ export default class MainView extends Component {
           document.getElementById('MiniPrayerView').style.display='none'
           document.getElementById('MainVideo').style.display='none'
           document.getElementById('ImageContent').style.display='none'
+          this.updateLanguage()
         }
         else{
           if(holdScreen==false){
@@ -487,7 +545,7 @@ export default class MainView extends Component {
   }
 
   updateLanguage(){
-
+    console.log("updating language")
     var now = new Date()
     if (this.state.switchToArabic === true){
       if(this.state.blockArabicSwitch == false){
@@ -1115,7 +1173,7 @@ export default class MainView extends Component {
             </div>
           </div>
           <div id='PrayerViewContainer'>
-            <PrayerView PrayerName={{English:this.state.nextPrayer.EnglishName,BottomText:this.state.nextPrayer.Text}} CountDown={this.state.nextPrayer.Difference} activatePrayerHold={this.state.activatePrayerHold}/>
+            <PrayerView PrayerName={{English:this.state.nextPrayer.EnglishName,BottomText:this.state.nextPrayer.Text}} CountDown={this.state.nextPrayer.Difference} activatePrayerHold={this.state.activatePrayerHold} hijriDateFlag={this.state.switchToArabic} hijriDate={this.state.currentIslamicDate}/>
           </div>
         </div>)
         }
