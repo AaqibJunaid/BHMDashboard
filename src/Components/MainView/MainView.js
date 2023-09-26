@@ -570,13 +570,14 @@ export default class MainView extends Component {
       }      
       if(this.state.currentIslamicDate=="Unkown" ||this.state.currentIslamicDate==""){
         document.getElementById('Date').innerText=getLongDate()
-        document.getElementById('Date').style.fontSize='1.9vw'
+        document.getElementById('Date').style.fontSize='2vw'
         document.getElementById('Date').style.paddingLeft='3%'
         document.getElementById('Date').style.transform="scaleY(1)"
       }
       else{
         document.getElementById('Date').innerText=this.state.currentIslamicDate
-        document.getElementById('Date').style.fontSize='1.9vw'
+        // document.getElementById('Date').style.fontSize='1.6vw'
+        document.getElementById('Date').style.fontSize='2vw'
         document.getElementById('Date').style.transform="scaleY(1)"
         document.getElementById('Date').style.paddingLeft='3%'
       }
@@ -620,7 +621,8 @@ export default class MainView extends Component {
   updateDynamicBox(){
     var todayTimes=this.state.todayData
     document.getElementById('DateTimeArea').style.display='flex'
-    document.getElementById('Time').innerText=getCurrentTime(true)
+    // document.getElementById('Time').innerText=getCurrentTime(true)
+    document.getElementById('Time').innerText=getCurrentTime(false)
     document.getElementById('NextPrayerArea').style.display='flex'
     this.updateNextPrayer(this.getNextPrayerTime(todayTimes))
     this.nextPrayerTimeDifference(this.getNextPrayerTime(todayTimes))

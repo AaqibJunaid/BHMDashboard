@@ -194,7 +194,8 @@ body {
 #CurrentTime{
   display: flex;
   height: 100%;
-  width: 15vw;
+  /* width: 15vw; */
+  width: 12vw;
   justify-content: center;
   align-items: center;
 }
@@ -202,7 +203,7 @@ body {
   display: flex;
   width: 100%;
   color: ghostwhite;
-  font-size: 3.5vw;
+  font-size: 4.5vw;
   font-family: sans-serif;
   font-weight: lighter;
   justify-content: center;
@@ -212,7 +213,8 @@ body {
 #CurrentDate{
   display: flex;
   height: 100%;
-  width: 14.6vw;
+  /* width: 14.6vw; */
+  width: 18.6vw;
   justify-content: center;
   align-items: center;
   flex-direction: column;

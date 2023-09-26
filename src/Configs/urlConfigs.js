@@ -1,10 +1,8 @@
 const youtubeID = 'mx4rf9DCuzg'
 const youtubeMiniID='PZlpsyNqNJQ'
 
-const mainVideoID='862922713'
-const shortVideoID='862922681'
-
-
+const mainVideoID='868516647'
+const shortVideoID='868516612'
 
 // export const nodejsEndpoint = "https://mosquerestapi.glitch.me/"
 export const nodejsEndpoint = "https://p2y4v6qkpc.execute-api.eu-west-2.amazonaws.com/prod"
