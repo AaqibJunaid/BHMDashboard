@@ -42,7 +42,17 @@ export function getTodaysDate() {
 
     const formattedDate = day + '/' + month + '/' + year;
     return formattedDate;
-  }
+}
+
+export function getTodaysDateWithoutYear() {
+  const today = new Date();
+
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+
+  const formattedDate = day + '/' + month
+  return formattedDate;
+}
 
 export function getTomorrowDate(){
     const today = new Date()
@@ -60,6 +70,24 @@ export function getTomorrowDate(){
     }
 
     return date+'/'+month+'/'+tomorrow.getFullYear()
+}
+
+export function getTomorrowDateWithoutYear(){
+  const today = new Date()
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  var month= (tomorrow.getMonth())+1
+  var date = tomorrow.getDate()
+
+  if (month<10){
+    month = '0'+month
+  }
+
+  if (date<10){
+    date = '0'+date
+  }
+
+  return date+'/'+month
 }
 
 export function getDaySuffix(day) {

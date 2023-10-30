@@ -4,7 +4,7 @@ import axios from 'axios';
 import mosqueTimes from '../../mosqueTimes.json'
 import logo from '../../Assets/Logo.jpg'
 import PrayerView from '../../Components/PrayerView/PrayerView'
-import { getCurrentTime, getTodaysDate,getTomorrowDate,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
+import { getCurrentTime, getTodaysDate,getTodaysDateWithoutYear,getTomorrowDate,getTomorrowDateWithoutYear,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
 import { nodejsEndpoint,mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from '../../Configs/prayerConfigs';
 import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames,todayPrayerDaySwitchMax,tomorrowPrayerDaySwitchMax,duaUpdateMax } from '../../Configs/timingConfigs';
@@ -23,8 +23,8 @@ export default class MainView extends Component {
       imgUpdateTimer:0,
       prayerDayCounter:0,
       duaUpdateTimer:duaUpdateMax,
-      todayData:mosqueTimes.filter( element => element.Date === getTodaysDate())[0],
-      tomorrowData:this.getTomorrowData(),
+      todayData:mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0],
+      tomorrowData:mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0],
       lastKnownData:{},
       currentIslamicDate:"",
       dataStatus:"Initialising Application...",
@@ -545,7 +545,6 @@ export default class MainView extends Component {
   }
 
   updateLanguage(){
-    console.log("updating language")
     var now = new Date()
     if (this.state.switchToArabic === true){
       if(this.state.blockArabicSwitch == false){
@@ -577,7 +576,7 @@ export default class MainView extends Component {
       else{
         document.getElementById('Date').innerText=this.state.currentIslamicDate
         // document.getElementById('Date').style.fontSize='1.6vw'
-        document.getElementById('Date').style.fontSize='2vw'
+        document.getElementById('Date').style.fontSize='1.95vw'
         document.getElementById('Date').style.transform="scaleY(1)"
         document.getElementById('Date').style.paddingLeft='3%'
       }
@@ -825,36 +824,23 @@ export default class MainView extends Component {
     }
     return displayTime
   }
-  getTomorrowData(){
-    const today = new Date()
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDate())[0]
-    
-    return tomorrowData
-  }
 
   handleApiError(err){
     if (this.state.lastKnownData==""){
-      var todayData = mosqueTimes.filter( element => element.Date === getTodaysDate())[0]
-      const today = new Date()
-      const tomorrow = new Date(today)
-      tomorrow.setDate(tomorrow.getDate() + 1)
-      var tomorrowData=this.getTomorrowData()
+      var todayData = mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0]
+      var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
 
       this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
     }
     else if(this.state.lastKnownData.lastRefreshed == getTodaysDate()){
-      
       this.setState({todayData:this.state.lastKnownData.todayData,tomorrowData:this.state.lastKnownData.tomorrowData,currentIslamicDate:this.state.lastKnownData.hijriDate,dataStatus:"Data Failed to Refresh"})
-
     }
     else{
-      var todayData = mosqueTimes.filter( element => element.Date === getTodaysDate())[0]
+      var todayData = mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0]
       const today = new Date()
       const tomorrow = new Date(today)
       tomorrow.setDate(tomorrow.getDate() + 1)
-      var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDate())[0]
+      var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
 
       this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
     }
@@ -921,16 +907,12 @@ export default class MainView extends Component {
   shuffleArray(array) {
     let currentIndex = array.length,  randomIndex;
   
-    // While there remain elements to shuffle.
     while (currentIndex != 0) {
-  
-      // Pick a remaining element.
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
   
-      // And swap it with the current element.
       [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
+      array[randomIndex], array[currentIndex]];
     }
     return array;
   }
@@ -1087,11 +1069,8 @@ export default class MainView extends Component {
     this.manageView()
     this.callAPI()
   }
-  
-  componentDidMount(){
-    // this.updatePrayerList()
-    // this.syncBottomPanel()
 
+  componentDidMount(){
     this.initaliseView()
     this.interval = setInterval(() => this.manageView(), 1000);
     this.interval = setInterval(() => this.getData(), 30000);
