@@ -213,7 +213,7 @@ export default class MainView extends Component {
 
   manageView(){
     if(this.state.dataStatus!=="Initialising Application..."){
-      
+      this.updatePrayerList()
       var prayerViewTimings = this.calculatePrayerViewTimings()
       var forbiddenPeriods = this.calculateForbiddenTimes()
       var matchFound = false
@@ -223,7 +223,6 @@ export default class MainView extends Component {
 
       for (var i=0;i<forbiddenPeriods.length;i++){
         if(now.toLocaleTimeString()>= forbiddenPeriods[i].StartTime && now.toLocaleTimeString()< forbiddenPeriods[i].EndTime ){
-
           forbiddenPeriodFound=true
           var prayerTime = new Date(now.toDateString() + ' ' + forbiddenPeriods[i].EndTime)
           var prayer = {'Name':forbiddenPeriods[i].MainTitle,"Type": 'Starts','Time':prayerTime}
@@ -498,11 +497,19 @@ export default class MainView extends Component {
 
       var backgroundColours=this.getBackgroundColours(currentPrayer.Name)
       backgroundColours.forEach(function(prayer){
-          document.getElementById(prayer.Name).style.backgroundColor=prayer.Background
-          document.getElementById(prayer.Name+'Jamat').style.backgroundColor=prayer.Jamat
-          document.getElementById(prayer.Name+'Label').style.color=prayer.MainText
-          document.getElementById(prayer.Name+'Start').style.color=prayer.MainText
-          document.getElementById(prayer.Name+'Jamat').style.color=prayer.JamatText
+      
+        if (getDayOfWeek(now)=='Friday' && prayer.Name =='Zuhur'){
+          document.getElementById('ZuhurLabel').innerText='Jummah'
+        }
+        else{
+          document.getElementById(prayer.Name+'Label').innerText=prayer.Name
+        }
+        
+        document.getElementById(prayer.Name).style.backgroundColor=prayer.Background
+        document.getElementById(prayer.Name+'Jamat').style.backgroundColor=prayer.Jamat
+        document.getElementById(prayer.Name+'Label').style.color=prayer.MainText
+        document.getElementById(prayer.Name+'Start').style.color=prayer.MainText
+        document.getElementById(prayer.Name+'Jamat').style.color=prayer.JamatText
       })
     }
     else{
@@ -519,13 +526,20 @@ export default class MainView extends Component {
 
       var backgroundColours=this.getBackgroundColours("All")
       backgroundColours.forEach(function(prayer){
-          document.getElementById(prayer.Name).style.backgroundColor=prayer.Background
-          document.getElementById(prayer.Name+'Jamat').style.backgroundColor=prayer.Jamat
-          document.getElementById(prayer.Name+'Label').style.color=prayer.MainText
-          document.getElementById(prayer.Name+'Start').style.color=prayer.MainText
-          document.getElementById(prayer.Name+'Jamat').style.color=prayer.JamatText
+        
+        if (getDayOfWeek(now)=='Thursday' && prayer.Name =='Zuhur'){
+          document.getElementById('ZuhurLabel').innerText='Jummah'
+        }
+        else{
+          document.getElementById(prayer.Name+'Label').innerText=prayer.Name
+        }
+      
+        document.getElementById(prayer.Name).style.backgroundColor=prayer.Background
+        document.getElementById(prayer.Name+'Jamat').style.backgroundColor=prayer.Jamat
+        document.getElementById(prayer.Name+'Label').style.color=prayer.MainText
+        document.getElementById(prayer.Name+'Start').style.color=prayer.MainText
+        document.getElementById(prayer.Name+'Jamat').style.color=prayer.JamatText
       })
-
     }
     
     PrayerNames.forEach(function(prayerName) {
@@ -539,9 +553,6 @@ export default class MainView extends Component {
         document.getElementById(prayerName+'Jamat').innerText=(timings[prayerName+' Start']).substring(0,5)
       }
     })
-
-
- 
   }
 
   updateLanguage(){
@@ -971,32 +982,36 @@ export default class MainView extends Component {
 
   updateQRCodes(){
     var displayCodes = []
-
-    for (var i = this.state.firstQRCode+1;i < this.state.allQRCodes.length;i++){
-      if (displayCodes.length == this.state.allQRCodes.length-1){
-        break;
-      }
-      else{
-        displayCodes.push(this.state.allQRCodes[i])
-      }
-    }
-
-    if(displayCodes.length<this.state.allQRCodes.length){
-      for (var i = 0; i<this.state.allQRCodes.length;i++){
-        if (displayCodes.length == this.state.allQRCodes.length){
+    if (this.state.allQRCodes.length>3){
+      for (var i = this.state.firstQRCode+1;i < this.state.allQRCodes.length;i++){
+        if (displayCodes.length == this.state.allQRCodes.length-1){
           break;
         }
         else{
           displayCodes.push(this.state.allQRCodes[i])
         }
       }
-    }
 
-    if (this.state.firstQRCode == this.state.allQRCodes.length-1){
-      this.setState({firstQRCode:0})
+      if(displayCodes.length<this.state.allQRCodes.length){
+        for (var i = 0; i<this.state.allQRCodes.length;i++){
+          if (displayCodes.length == this.state.allQRCodes.length){
+            break;
+          }
+          else{
+            displayCodes.push(this.state.allQRCodes[i])
+          }
+        }
+      }
+
+      if (this.state.firstQRCode == this.state.allQRCodes.length-1){
+        this.setState({firstQRCode:0})
+      }
+      else{
+        this.setState({firstQRCode:this.state.firstQRCode+1})
+      }
     }
     else{
-      this.setState({firstQRCode:this.state.firstQRCode+1})
+      displayCodes=this.state.allQRCodes
     }
     
     this.setState({QRCodes:displayCodes})
