@@ -16,12 +16,24 @@ export default class PrayerView extends Component {
             if(this.props.hijriDateFlag==true && this.props.hijriDate!=="Unkown" && this.props.hijriDate!==""){
 
                 var dateArray= this.props.hijriDate.split('\n')
-                return(
-                    <div id='BottomPanel'>
-                        <div id='TodayDate'>{dateArray[0]}<br/>{dateArray[1]}</div>
-                        <div id='Clock'>{getCurrentTime()}</div>
-                    </div>
-                )
+
+                if(this.props.hijriDate.includes("ath-Th")){
+                    console.log("big date")
+                    return(
+                        <div id='BottomPanel'>
+                            <div id='TodayDateMini'>{dateArray[0]}<br/>{dateArray[1]}</div>
+                            <div id='ClockMini'>{getCurrentTime()}</div>
+                        </div>
+                    )
+                }
+                else{
+                    return(
+                        <div id='BottomPanel'>
+                            <div id='TodayDate'>{dateArray[0]}<br/>{dateArray[1]}</div>
+                            <div id='Clock'>{getCurrentTime()}</div>
+                        </div>
+                    )
+                }
             }
             else{
                 var dateArray= getLongDate().split('\n')

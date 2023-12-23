@@ -341,18 +341,13 @@ export default class MainView extends Component {
 
         if(this.props.MosqueArea == 'Main Hall'){
           document.getElementById('MainVideo').style.display='none'
+          this.handleMediaPics()
           document.getElementById('ImageContent').style.display='flex'
         }
         else{
+          this.handleVideo()
           document.getElementById('MainVideo').style.display='flex'
           document.getElementById('ImageContent').style.display='none'
-        }
-
-        if(this.props.MosqueArea == 'Main Hall'){
-          this.handleMediaPics()
-        }
-        else{
-          this.handleVideo()
         }
         
         this.updatePrayerList()
@@ -372,7 +367,6 @@ export default class MainView extends Component {
   }
 
   handleMediaPics(){
-
     var todayHolds = []
     var todayTimes = this.state.todayData
     const now = new Date()
@@ -398,19 +392,19 @@ export default class MainView extends Component {
     if (switchToDua){
       if (this.state.duaUpdateTimer==duaUpdateMax){
         this.updateDua()
-        this.setState({duaUpdateTimer:0})
+        this.setState({duaUpdateTimer:0,firstContentImage:0})
       }
       else{
-        this.setState({duaUpdateTimer:this.state.duaUpdateTimer+1})
+        this.setState({duaUpdateTimer:this.state.duaUpdateTimer+1,firstContentImage:0})
       }
     }
     else{
       if(this.state.imgUpdateTimer==imgUpdateMax){
         this.updateContent()
-        this.setState({imgUpdateTimer:0})
+        this.setState({imgUpdateTimer:0,firstDuaImage:0})
       }
       else{
-        this.setState({imgUpdateTimer:this.state.imgUpdateTimer+1})
+        this.setState({imgUpdateTimer:this.state.imgUpdateTimer+1,firstDuaImage:0})
       }
     }
   }
@@ -526,7 +520,7 @@ export default class MainView extends Component {
 
       var backgroundColours=this.getBackgroundColours("All")
       backgroundColours.forEach(function(prayer){
-        
+
         if (getDayOfWeek(now)=='Thursday' && prayer.Name =='Zuhur'){
           document.getElementById('ZuhurLabel').innerText='Jummah'
         }
@@ -586,8 +580,12 @@ export default class MainView extends Component {
       }
       else{
         document.getElementById('Date').innerText=this.state.currentIslamicDate
-        // document.getElementById('Date').style.fontSize='1.6vw'
-        document.getElementById('Date').style.fontSize='1.95vw'
+        if(this.state.currentIslamicDate.includes("ath-Th")){
+          document.getElementById('Date').style.fontSize='1.60vw'
+        }
+        else{
+          document.getElementById('Date').style.fontSize='1.95vw'
+        }
         document.getElementById('Date').style.transform="scaleY(1)"
         document.getElementById('Date').style.paddingLeft='3%'
       }
@@ -840,8 +838,9 @@ export default class MainView extends Component {
     if (this.state.lastKnownData==""){
       var todayData = mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0]
       var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
-
-      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+      
+      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Saturday 10th\nJumādā ath-Thāniya 1445",dataStatus:"Running on Backup Data"})
+      // this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
     }
     else if(this.state.lastKnownData.lastRefreshed == getTodaysDate()){
       this.setState({todayData:this.state.lastKnownData.todayData,tomorrowData:this.state.lastKnownData.tomorrowData,currentIslamicDate:this.state.lastKnownData.hijriDate,dataStatus:"Data Failed to Refresh"})
@@ -853,7 +852,9 @@ export default class MainView extends Component {
       tomorrow.setDate(tomorrow.getDate() + 1)
       var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
 
-      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Saturday 10th\nJumādā ath-Thāniya 1445",dataStatus:"Running on Backup Data"})
+
+      // this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
     }
 
     if(err=='Network Error'){
@@ -1018,22 +1019,42 @@ export default class MainView extends Component {
   }
 
   updateContent(){
-    if(this.state.firstContentImage == this.state.allContentImages.length-1){
+    if(this.state.firstContentImage == this.state.allContentImages.length){
       this.setState({firstContentImage:0,contentImage:this.state.allContentImages[0]})
     }
     else{
+      var current = this.state.allContentImages[this.state.firstContentImage]
       var counter = this.state.firstContentImage + 1
-      this.setState({firstContentImage:counter,contentImage:this.state.allContentImages[counter]})
+      this.setState({firstContentImage:counter,contentImage:current})
     }
   }
 
   updateDua(){
-    if(this.state.firstDuaImage == this.state.duaImages.length-1){
-      this.setState({firstDuaImage:0,contentImage:this.state.duaImages[0]})
+    let currentPrayer = this.getCurrentPrayer(this.state.todayData).Name
+    let fajrSlides = []
+    let otherSlides = []
+
+    for (let i=0;i<this.state.duaImages.length;i++){
+      if (this.state.duaImages[i].includes('Fajr')){
+        fajrSlides.push(this.state.duaImages[i])
+      }
+      else{
+        otherSlides.push(this.state.duaImages[i])
+      }
+    }
+
+    if(currentPrayer=='Fajr'){
+      this.setState({firstDuaImage:0,contentImage:fajrSlides[0]})
     }
     else{
-      var counter = this.state.firstDuaImage + 1
-      this.setState({firstDuaImage:counter,contentImage:this.state.duaImages[counter]})
+      if(this.state.firstDuaImage == otherSlides.length){
+        this.setState({firstDuaImage:0,contentImage:otherSlides[0]})
+      }
+      else{
+        var current = otherSlides[this.state.firstDuaImage]
+        var nextCounter = this.state.firstDuaImage + 1
+        this.setState({firstDuaImage:nextCounter,contentImage:current})
+      }
     }
   }
 
