@@ -5,7 +5,7 @@ import mosqueTimes from '../../mosqueTimes.json'
 import logo from '../../Assets/Logo.jpg'
 import PrayerView from '../../Components/PrayerView/PrayerView'
 import { getCurrentTime, getTodaysDate,getTodaysDateWithoutYear,getTomorrowDate,getTomorrowDateWithoutYear,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
-import { nodejsEndpoint,mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
+import { prayerTimesEndpoint,vimeoConfigEndpoint, mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from '../../Configs/prayerConfigs';
 import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames,todayPrayerDaySwitchMax,tomorrowPrayerDaySwitchMax,duaUpdateMax } from '../../Configs/timingConfigs';
 import { appVersion } from '../../Configs/systemConfigs';
@@ -48,7 +48,9 @@ export default class MainView extends Component {
       miniPrayerViewData:{'Name':'','Text':''},
       currentDay:"Todays Prayer Times",
       allDuaImages:[],
-      blockArabicSwitch:true
+      blockArabicSwitch:true,
+      mainVideoID:0,
+      shortVideoID:0
     }
   }
   
@@ -105,24 +107,25 @@ export default class MainView extends Component {
   }
 
   handleProgress(){
-    switch (this.state.elipsisCounter){
-      case 0:
-        this.setState({elipsisCounter:1})
-        return ''
-        break;
-      case 1:
-        this.setState({elipsisCounter:2})
-        return '.'
-        break;
-      case 2:
-        this.setState({elipsisCounter:3})
-        return '..'
-        break;
-      case 3:
-        this.setState({elipsisCounter:0})
-        return '...'
-        break;
-    }
+    // switch (this.state.elipsisCounter){
+    //   case 0:
+    //     this.setState({elipsisCounter:1})
+    //     return ''
+    //     break;
+    //   case 1:
+    //     this.setState({elipsisCounter:2})
+    //     return '.'
+    //     break;
+    //   case 2:
+    //     this.setState({elipsisCounter:3})
+    //     return '..'
+    //     break;
+    //   case 3:
+    //     this.setState({elipsisCounter:0})
+    //     return '...'
+    //     break;
+    // }
+    return '...'
   }
 
   calculateForbiddenTimes(){
@@ -581,7 +584,7 @@ export default class MainView extends Component {
       else{
         document.getElementById('Date').innerText=this.state.currentIslamicDate
         if(this.state.currentIslamicDate.includes("ath-Th")){
-          document.getElementById('Date').style.fontSize='1.60vw'
+          document.getElementById('Date').style.fontSize='1.56vw'
         }
         else{
           document.getElementById('Date').style.fontSize='1.95vw'
@@ -838,9 +841,7 @@ export default class MainView extends Component {
     if (this.state.lastKnownData==""){
       var todayData = mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0]
       var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
-      
-      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Saturday 10th\nJumādā ath-Thāniya 1445",dataStatus:"Running on Backup Data"})
-      // this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
     }
     else if(this.state.lastKnownData.lastRefreshed == getTodaysDate()){
       this.setState({todayData:this.state.lastKnownData.todayData,tomorrowData:this.state.lastKnownData.tomorrowData,currentIslamicDate:this.state.lastKnownData.hijriDate,dataStatus:"Data Failed to Refresh"})
@@ -852,9 +853,7 @@ export default class MainView extends Component {
       tomorrow.setDate(tomorrow.getDate() + 1)
       var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
 
-      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Saturday 10th\nJumādā ath-Thāniya 1445",dataStatus:"Running on Backup Data"})
-
-      // this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
     }
 
     if(err=='Network Error'){
@@ -878,20 +877,30 @@ export default class MainView extends Component {
   }
 
   callAPI = async () => {
-    await axios.get(nodejsEndpoint,{'headers':'Access-Control-Allow-Origin:*'}).then(res=>{
-    if (res.data.Status == 'Successfull'){
-      this.setState({todayData:res.data.Data.todayData,tomorrowData:res.data.Data.tomorrowData,currentIslamicDate:res.data.Data.hijriDate,dataStatus:"Data Refreshed at "+getCurrentTime(false)})
-      this.setState({lastKnownData:{'lastRefreshed':getTodaysDate(),'todayData':this.state.todayData,'tomorrowData':res.data.Data.tomorrowData,'hijriDate':res.data.Data.hijriDate}})
-      this.setState({errorMessage:this.state.buildVersion})
+    try{
+
+      const prayerTimesResponse = await fetch(prayerTimesEndpoint)
+      const prayerTimesResult = await prayerTimesResponse.json()
+      if (prayerTimesResult.Status == 'Successfull'){
+        this.setState({todayData:prayerTimesResult.Data.todayData,tomorrowData:prayerTimesResult.Data.tomorrowData,currentIslamicDate:prayerTimesResult.Data.hijriDate,dataStatus:"Data Refreshed at "+getCurrentTime(false)})
+        this.setState({lastKnownData:{'lastRefreshed':getTodaysDate(),'todayData':this.state.todayData,'tomorrowData':prayerTimesResult.Data.tomorrowData,'hijriDate':prayerTimesResult.Data.hijriDate}})
+        this.setState({errorMessage:this.state.buildVersion})
+      }
+      else{
+        this.handleApiError(prayerTimesResult.Data)
+      }
+
+      const vimeoIDResponse = await fetch(vimeoConfigEndpoint)
+      const vimeoIDResult = await vimeoIDResponse.json()
+
+      this.setState({mainVideoID:vimeoIDResult.Data[0].MainID,shortVideoID:vimeoIDResult.Data[0].ShortID})
+      this.handleVideo()
+      this.setState({dataStatus:"Data Refreshed at "+getCurrentTime(false)})
     }
-    else{
-      this.handleApiError(res.data.Data)
+    catch (error){
+      this.handleApiError(error.message)
+      console.log(error.message)
     }
-    })
-    .catch(err=>{
-      this.handleApiError(err.message)
-      console.log(err.message)
-    })
   }
 
   getData(){
@@ -1091,19 +1100,21 @@ export default class MainView extends Component {
     }
 
     if (switchToMiniVideo){
-      this.setState({mainVideo:<div id='MainVideo'><iframe src={shortVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
+      var shortURL = shortVideoEmbed.replace("[shortVideoID]",this.state.shortVideoID)
+      this.setState({mainVideo:<div id='MainVideo'><iframe src={shortURL} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
     }
     else{
-      this.setState({mainVideo:<div id='MainVideo'><iframe src={mainVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
+      var mainURL = mainVideoEmbed.replace("[mainVideoID]",this.state.mainVideoID)
+      this.setState({mainVideo:<div id='MainVideo'><iframe src={mainURL} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
     }
   }
 
   initaliseView(){
+    this.callAPI()
     this.getQRImages()
     this.getContent()
     this.calculatePrayerViewTimings()
     this.manageView()
-    this.callAPI()
   }
 
   componentDidMount(){
@@ -1124,8 +1135,6 @@ export default class MainView extends Component {
             <div id="MainView">
             <div id="MainPanel">
                 <div id="Top">
-                {/* <div id='MainVideo'><iframe src="https://player.vimeo.com/video/835581366?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1" style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div> */}
-                
                 {this.state.mainVideo}
                 <div id='MiniPrayerView'>
                     <div id='MiniPrayer-Name'>{this.state.miniPrayerViewData.Name}</div>
