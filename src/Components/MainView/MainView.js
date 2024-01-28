@@ -133,10 +133,15 @@ export default class MainView extends Component {
     var todayTimes = this.state.todayData
     const now = new Date()
 
-    var prayerTime = new Date(now.toDateString() + ' ' + (todayTimes['Sunrise']))
-    var StartTime = new Date(prayerTime.getTime())
-    var EndTime = new Date(prayerTime.getTime()+20*60000)
-    forbiddenPeriods.push({'MainTitle':'Attention','BottomTitle':'Please Refrain from Praying for ','ViewType':'Countdown','StartTime':StartTime.toLocaleTimeString(),'EndTime':EndTime.toLocaleTimeString()})
+    var sunriseTime = new Date(now.toDateString() + ' ' + (todayTimes['Sunrise']))
+    var sunriseStartTime = new Date(sunriseTime.getTime())
+    var sunriseEndTime = new Date(sunriseTime.getTime()+20*60000)
+    forbiddenPeriods.push({'MainTitle':'Attention','BottomTitle':'Please Refrain from Praying for ','ViewType':'Countdown','StartTime':sunriseStartTime.toLocaleTimeString(),'EndTime':sunriseEndTime.toLocaleTimeString()})
+
+    var zuhurTime = new Date(now.toDateString() + ' ' + (todayTimes['Zuhur Start']))
+    var zuhurStartTime = new Date(zuhurTime.getTime()-5*60000)
+    var zuhurEndTime = new Date(zuhurTime.getTime())
+    forbiddenPeriods.push({'MainTitle':'Attention','BottomTitle':'Please Refrain from Praying for ','ViewType':'Countdown','StartTime':zuhurStartTime.toLocaleTimeString(),'EndTime':zuhurEndTime.toLocaleTimeString()})
 
     return forbiddenPeriods
   }
