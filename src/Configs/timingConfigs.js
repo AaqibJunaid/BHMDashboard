@@ -41,4 +41,4 @@ export const eventTimeFrames = [
                                     {'MainTitle':'Eid Prayer','BottomTitle':'Now in progress','Date':'28/06/2023','StartTime':'11:00','EndTime':'11:30:00'},
                                     {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'02/07/2023','StartTime':'17:30','EndTime':'17:31'}
                                ]
-export const jummahPrayerTimes = ['12:30','13:30']
+export const jummahPrayerTimes = ['13:30','14:30']
