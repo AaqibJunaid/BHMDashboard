@@ -30,6 +30,7 @@ export default class MainApp extends Component {
               <div id='ButtonArea'>
                 <button id='Main Hall' className='ViewButton' onClick={()=>{this.setView("Main Hall")}}>Main Hall</button>
                 <button id='Hallway' className='ViewButton' onClick={()=>{this.setView("Hallway")}}>Hallway</button>
+                <button id='Poll' className='ViewButton' onClick={()=>{this.setView("Poll")}}>Poll</button>
               </div>
             </div>)
             :

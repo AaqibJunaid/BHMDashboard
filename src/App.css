@@ -50,7 +50,7 @@ body {
 .ViewButton{
   display: flex;
   height: 15vh;
-  width: 40vw;
+  width: 30vw;
   background: grey;
   border-radius: 7px;
   font-size: 5vw;
@@ -63,7 +63,7 @@ body {
 }
 .ViewButton:is(:hover,:focus){
   background: darkslategray;
-  width: 40.5vw;
+  width: 30.5vw;
 }
 #ButtonArea{
   display: flex;

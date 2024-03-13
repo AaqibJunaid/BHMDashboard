@@ -3,6 +3,7 @@ import React, { Component} from 'react';
 import axios from 'axios';
 import mosqueTimes from '../../mosqueTimes.json'
 import logo from '../../Assets/Logo.jpg'
+import qrCode from '../../Assets/21.png'
 import PrayerView from '../../Components/PrayerView/PrayerView'
 import { getCurrentTime, getTodaysDate,getTodaysDateWithoutYear,getTomorrowDate,getTomorrowDateWithoutYear,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
 import { prayerTimesEndpoint,vimeoConfigEndpoint, mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
@@ -1123,9 +1124,15 @@ export default class MainView extends Component {
   }
 
   componentDidMount(){
-    this.initaliseView()
-    this.interval = setInterval(() => this.manageView(), 1000);
-    this.interval = setInterval(() => this.getData(), 30000);
+    if(this.props.MosqueArea == "Poll"){
+      document.getElementById("loader").style.display='none'
+      document.getElementById("QR").style.display='flex'
+    }
+    else{
+      this.initaliseView()
+      this.interval = setInterval(() => this.manageView(), 1000);
+      this.interval = setInterval(() => this.getData(), 30000);
+    }
   }
 
   render(){
@@ -1133,7 +1140,10 @@ export default class MainView extends Component {
         <div>
         {(this.state.dataStatus=="Initialising Application...")?
         (<div id='LoadScreen'>
-          <div class="custom-loader"></div>
+          <div id ='loader' class="custom-loader"></div>
+          <div id='QR'>
+            <img src={qrCode}></img>
+          </div>
         </div>)
         :
         (<div>
