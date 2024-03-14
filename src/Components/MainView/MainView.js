@@ -3,7 +3,7 @@ import React, { Component} from 'react';
 import axios from 'axios';
 import mosqueTimes from '../../mosqueTimes.json'
 import logo from '../../Assets/Logo.jpg'
-import qrCode from '../../Assets/21.png'
+import qrCode from '../../Assets/Content/C.png'
 import PrayerView from '../../Components/PrayerView/PrayerView'
 import { getCurrentTime, getTodaysDate,getTodaysDateWithoutYear,getTomorrowDate,getTomorrowDateWithoutYear,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
 import { prayerTimesEndpoint,vimeoConfigEndpoint, mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
