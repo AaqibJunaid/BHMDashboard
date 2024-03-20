@@ -48,10 +48,11 @@ export default class MainView extends Component {
       mainVideo: <div id='MainVideo'><iframe src={mainVideoEmbed} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>,
       miniPrayerViewData:{'Name':'','Text':''},
       currentDay:"Todays Prayer Times",
-      allDuaImages:[],
+      ramadanContent:[],
       blockArabicSwitch:true,
       mainVideoID:0,
-      shortVideoID:0
+      shortVideoID:0,
+      todayDate:getTodaysDate()
     }
   }
   
@@ -222,6 +223,7 @@ export default class MainView extends Component {
 
   manageView(){
     if(this.state.dataStatus!=="Initialising Application..."){
+
       this.updatePrayerList()
       var prayerViewTimings = this.calculatePrayerViewTimings()
       var forbiddenPeriods = this.calculateForbiddenTimes()
@@ -371,6 +373,12 @@ export default class MainView extends Component {
         else{
           this.setState({qrUpdateTimer:this.state.qrUpdateTimer+1})
         }
+      }
+
+      if(this.state.todayDate!==getTodaysDate()){
+        this.setState({allContentImages:[],duaImages:{},firstContentImage:0,contentImage:[],todayDate:getTodaysDate()})
+        this.getContent()
+        this.callAPI()
       }
     }
   }
@@ -884,13 +892,38 @@ export default class MainView extends Component {
 
   callAPI = async () => {
     try{
-
       const prayerTimesResponse = await fetch(prayerTimesEndpoint)
       const prayerTimesResult = await prayerTimesResponse.json()
       if (prayerTimesResult.Status == 'Successfull'){
         this.setState({todayData:prayerTimesResult.Data.todayData,tomorrowData:prayerTimesResult.Data.tomorrowData,currentIslamicDate:prayerTimesResult.Data.hijriDate,dataStatus:"Data Refreshed at "+getCurrentTime(false)})
         this.setState({lastKnownData:{'lastRefreshed':getTodaysDate(),'todayData':this.state.todayData,'tomorrowData':prayerTimesResult.Data.tomorrowData,'hijriDate':prayerTimesResult.Data.hijriDate}})
         this.setState({errorMessage:this.state.buildVersion})
+        let iDate = prayerTimesResult.Data.hijriDate
+
+        if(iDate.includes("Ramadan")){
+          let imgs = this.state.allContentImages
+          let split = iDate.split(" ")[1]
+          let range = split.indexOf("Ramadan")-3
+          let fDate = split.substring(0,range)
+          let foundRamadan = false
+
+          for (let i=0;i<imgs.length;i++){
+            if(imgs[i].includes("/"+fDate+".")){
+              foundRamadan=true
+              break;
+            }
+          }
+
+          if(!foundRamadan){
+            for (let i=0;i<this.state.ramadanContent.length;i++){
+              if(this.state.ramadanContent[i].includes("/"+fDate+".")){
+                imgs.push(this.state.ramadanContent[i])
+                this.setState({allContentImages:imgs})
+                break;
+              }
+            }
+          }
+        }
       }
       else{
         this.handleApiError(prayerTimesResult.Data)
@@ -947,6 +980,7 @@ export default class MainView extends Component {
   getContent() {
     let images = {};
     let cfImages = {};
+    let ramadanImages = {}
     let today = new Date()
     let dow = getDayOfWeek(today)
     let allImages = []
@@ -980,8 +1014,11 @@ export default class MainView extends Component {
 
     var cf = require.context('../../Assets/Content/Common', false, /\.(png|jpe?g|svg)$/)
     cf.keys().map((item, index) => { cfImages[item.replace('./', '')] = cf(item); });
-
     let imgsCommon = Object.values(cfImages)
+
+    var ri = require.context('../../Assets/Content/Ramadan', false, /\.(png|jpe?g|svg)$/)
+    ri.keys().map((item, index) => { ramadanImages[item.replace('./', '')] = ri(item); });
+    let rContent = Object.values(ramadanImages)
 
     allImages = imgs
     allImages.push(...imgsCommon)
@@ -992,7 +1029,7 @@ export default class MainView extends Component {
     duaFolder.keys().map((item, index) => { duaImages[item.replace('./', '')] = duaFolder(item); });
     let duas = Object.values(duaImages)
 
-    this.setState({allContentImages:allImages,duaImages:duas,firstContentImage:0,contentImage:allImages[0]})
+    this.setState({allContentImages:allImages,duaImages:duas,firstContentImage:0,contentImage:allImages[0],ramadanContent:rContent})
 
   }
 
@@ -1131,7 +1168,8 @@ export default class MainView extends Component {
     else{
       this.initaliseView()
       this.interval = setInterval(() => this.manageView(), 1000);
-      this.interval = setInterval(() => this.getData(), 30000);
+      // this.interval = setInterval(() => this.getData(), 30000);
+      this.interval = setInterval(() => this.getData(), 1500);
     }
   }
 
