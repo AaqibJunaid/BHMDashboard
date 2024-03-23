@@ -890,54 +890,92 @@ export default class MainView extends Component {
     }
   }
 
+  shouldUpdateTiming(){
+
+    var now = new Date();
+    let minutes= 0
+    let hours = 0
+    if(Object.keys(this.state.lastKnownData).length > 0){
+      let lastDT = this.state.lastKnownData.lastRefreshDT
+      var timeDiff = Math.abs(lastDT - now);
+      hours = Math.floor(timeDiff / (1000 * 60 * 60));
+      minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    }
+
+    if (Object.keys(this.state.lastKnownData).length == 0){
+      return "Not Run Yet"
+    }
+    else if (hours > 0 || minutes >= 30){
+      return "Needs Updated"
+    }
+    else{
+      return "No Update Needed"
+    }    
+
+  }
+
   callAPI = async () => {
     try{
-      const prayerTimesResponse = await fetch(prayerTimesEndpoint)
-      const prayerTimesResult = await prayerTimesResponse.json()
-      if (prayerTimesResult.Status == 'Successfull'){
-        this.setState({todayData:prayerTimesResult.Data.todayData,tomorrowData:prayerTimesResult.Data.tomorrowData,currentIslamicDate:prayerTimesResult.Data.hijriDate,dataStatus:"Data Refreshed at "+getCurrentTime(false)})
-        this.setState({lastKnownData:{'lastRefreshed':getTodaysDate(),'todayData':this.state.todayData,'tomorrowData':prayerTimesResult.Data.tomorrowData,'hijriDate':prayerTimesResult.Data.hijriDate}})
-        this.setState({errorMessage:this.state.buildVersion})
-        let iDate = prayerTimesResult.Data.hijriDate
 
-        if(iDate.includes("Ramadan")){
-          let imgs = this.state.allContentImages
-          let split = iDate.split(" ")[1]
-          let range = split.indexOf("Ramadan")-3
-          let fDate = split.substring(0,range)
-          let foundRamadan = false
+      let currentStatus = this.shouldUpdateTiming()
 
-          for (let i=0;i<imgs.length;i++){
-            if(imgs[i].includes("/"+fDate+".")){
-              foundRamadan=true
-              break;
-            }
-          }
+      if(currentStatus == "Not Run Yet" || currentStatus == "Needs Updated"){
+        const prayerTimesResponse = await fetch(prayerTimesEndpoint)
+        const prayerTimesResult = await prayerTimesResponse.json()
+        if (prayerTimesResult.Status == 'Successfull'){
+          this.setState({todayData:prayerTimesResult.Data.todayData,tomorrowData:prayerTimesResult.Data.tomorrowData,currentIslamicDate:prayerTimesResult.Data.hijriDate,dataStatus:"Data Refreshed at "+getCurrentTime(false)})
+          this.setState({lastKnownData:{'lastRefreshed':getTodaysDate(), 'lastRefreshDT':new Date(),'todayData':this.state.todayData,'tomorrowData':prayerTimesResult.Data.tomorrowData,'hijriDate':prayerTimesResult.Data.hijriDate}})
+          this.setState({errorMessage:this.state.buildVersion})
+          let iDate = prayerTimesResult.Data.hijriDate
 
-          if(!foundRamadan){
-            for (let i=0;i<this.state.ramadanContent.length;i++){
-              if(this.state.ramadanContent[i].includes("/"+fDate+".")){
-                imgs.push(this.state.ramadanContent[i])
-                this.setState({allContentImages:imgs})
+          if(iDate.includes("Ramadan")){
+            let imgs = this.state.allContentImages
+            let split = iDate.split(" ")[1]
+            let range = split.indexOf("Ramadan")-3
+            let fDate = split.substring(0,range)
+            let foundRamadan = false
+
+            for (let i=0;i<imgs.length;i++){
+              if(imgs[i].includes("/"+fDate+".")){
+                foundRamadan=true
                 break;
+              }
+            }
+
+            if(!foundRamadan){
+              for (let i=0;i<this.state.ramadanContent.length;i++){
+                if(this.state.ramadanContent[i].includes("/"+fDate+".")){
+                  imgs.push(this.state.ramadanContent[i])
+                  this.setState({allContentImages:imgs})
+                  break;
+                }
               }
             }
           }
         }
-      }
-      else{
-        this.handleApiError(prayerTimesResult.Data)
+        else{
+          this.handleApiError(prayerTimesResult.Data)
+        }
       }
 
-      const vimeoIDResponse = await fetch(vimeoConfigEndpoint)
-      const vimeoIDResult = await vimeoIDResponse.json()
+      if (this.props.MosqueArea != 'Main Hall'){
+        const vimeoIDResponse = await fetch(vimeoConfigEndpoint)
+        const vimeoIDResult = await vimeoIDResponse.json()
 
-      this.setState({mainVideoID:vimeoIDResult.Data[0].MainID,shortVideoID:vimeoIDResult.Data[0].ShortID})
-      this.handleVideo()
-      this.setState({dataStatus:"Data Refreshed at "+getCurrentTime(false)})
+        this.setState({mainVideoID:vimeoIDResult.Data[0].MainID,shortVideoID:vimeoIDResult.Data[0].ShortID})
+        this.handleVideo()
+        this.setState({dataStatus:"Data Refreshed at "+getCurrentTime(false)})
+      }
     }
     catch (error){
-      this.handleApiError(error.message)
+      let currentStatus = this.shouldUpdateTiming()
+
+      if(currentStatus == "No Update Needed"){
+        this.handleApiError("Vimeo API Failed")
+      }
+      else{
+        this.handleApiError(error.message)
+      }
       console.log(error.message)
     }
   }
