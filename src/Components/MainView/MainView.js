@@ -852,22 +852,24 @@ export default class MainView extends Component {
   }
 
   handleApiError(err){
-    if (this.state.lastKnownData==""){
-      var todayData = mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0]
-      var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
-      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
-    }
-    else if(this.state.lastKnownData.lastRefreshed == getTodaysDate()){
-      this.setState({todayData:this.state.lastKnownData.todayData,tomorrowData:this.state.lastKnownData.tomorrowData,currentIslamicDate:this.state.lastKnownData.hijriDate,dataStatus:"Data Failed to Refresh"})
-    }
-    else{
-      var todayData = mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0]
-      const today = new Date()
-      const tomorrow = new Date(today)
-      tomorrow.setDate(tomorrow.getDate() + 1)
-      var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
+    if(err!='Vimeo API Failed'){
+      if (this.state.lastKnownData==""){
+        var todayData = mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0]
+        var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
+        this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+      }
+      else if(this.state.lastKnownData.lastRefreshed == getTodaysDate()){
+        this.setState({todayData:this.state.lastKnownData.todayData,tomorrowData:this.state.lastKnownData.tomorrowData,currentIslamicDate:this.state.lastKnownData.hijriDate,dataStatus:"Data Failed to Refresh"})
+      }
+      else{
+        var todayData = mosqueTimes.filter( element => element.Date === getTodaysDateWithoutYear())[0]
+        const today = new Date()
+        const tomorrow = new Date(today)
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        var tomorrowData=mosqueTimes.filter( element => element.Date === getTomorrowDateWithoutYear())[0]
 
-      this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+        this.setState({todayData:todayData,tomorrowData:tomorrowData,currentIslamicDate:"Unkown",dataStatus:"Running on Backup Data"})
+      }
     }
 
     if(err=='Network Error'){
@@ -962,6 +964,9 @@ export default class MainView extends Component {
         const vimeoIDResponse = await fetch(vimeoConfigEndpoint)
         const vimeoIDResult = await vimeoIDResponse.json()
 
+        if (vimeoIDResult.Status=='To Many Requests'){
+          this.setState({errorMessage:'Backup Video Running'})
+        }
         this.setState({mainVideoID:vimeoIDResult.Data[0].MainID,shortVideoID:vimeoIDResult.Data[0].ShortID})
         this.handleVideo()
         this.setState({dataStatus:"Data Refreshed at "+getCurrentTime(false)})
@@ -1206,8 +1211,7 @@ export default class MainView extends Component {
     else{
       this.initaliseView()
       this.interval = setInterval(() => this.manageView(), 1000);
-      // this.interval = setInterval(() => this.getData(), 30000);
-      this.interval = setInterval(() => this.getData(), 1500);
+      this.interval = setInterval(() => this.getData(), 45000);
     }
   }
 
