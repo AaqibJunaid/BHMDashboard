@@ -936,12 +936,26 @@ export default class MainView extends Component {
             let range = split.indexOf("Ramadan")-3
             let fDate = split.substring(0,range)
             let foundRamadan = false
+            let oldImgPos=0
+            let tempImgs=[]
 
             for (let i=0;i<imgs.length;i++){
               if(imgs[i].includes("/"+fDate+".")){
                 foundRamadan=true
-                break;
               }
+              else if(imgs[i].includes("/"+(Number(fDate)-1)+".")){
+                oldImgPos = i
+              }
+            }
+
+            if (oldImgPos!=0){
+              for (let i=0;i<imgs.length;i++){
+                if(i!=oldImgPos){
+                  tempImgs.push(imgs[i])
+                }
+              }
+              imgs=[]
+              imgs=tempImgs
             }
 
             if(!foundRamadan){
@@ -990,7 +1004,7 @@ export default class MainView extends Component {
     var minute = getCurrentTime(false)
     minute = minute.substring(3,5)
 
-    if (minute=="00" || minute=="30"){
+    if (minute=="00" || minute=="46"){
       this.callAPI()
       this.setState({errorMessage:this.state.buildVersion})
     }
@@ -1211,7 +1225,7 @@ export default class MainView extends Component {
     else{
       this.initaliseView()
       this.interval = setInterval(() => this.manageView(), 1000);
-      this.interval = setInterval(() => this.getData(), 45000);
+      this.interval = setInterval(() => this.getData(), 30000);
     }
   }
 
