@@ -31,17 +31,18 @@ export const prayerHoldTimesMax = {
 //     'IshaJamat':'0',
 // }
 export const holdVideoTimeFrames = [{'Date':'30/07/2023','StartTime':'19:45','EndTime':'22:00'}]
+export const limitedImageDates=['14/06/2024','15/06/2024']
 export const eventTimeFrames = [
-                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'10/04/2024','StartTime':'07:00','EndTime':'07:30'},
-                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'10/04/2024','StartTime':'07:30','EndTime':'08:00'},
-                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'10/04/2024','StartTime':'08:30','EndTime':'09:00'},
-                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'10/04/2024','StartTime':'09:00','EndTime':'09:20'},
-                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'10/04/2024','StartTime':'09:30','EndTime':'10:00'},
-                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'10/04/2024','StartTime':'10:00','EndTime':'10:20'},
-                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'10/04/2024','StartTime':'10:30','EndTime':'11:00:00'},
-                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'10/04/2024','StartTime':'11:00','EndTime':'11:20'},
-                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'10/04/2024','StartTime':'11:30','EndTime':'12:00:00'},
-                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'10/04/2024','StartTime':'12:00','EndTime':'12:30'},
+                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'16/06/2024','StartTime':'07:00','EndTime':'07:30'},
+                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'16/06/2024','StartTime':'07:30','EndTime':'07:55'},
+                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'16/06/2024','StartTime':'07:55','EndTime':'08:30'},
+                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'16/06/2024','StartTime':'08:30','EndTime':'08:55'},
+                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'16/06/2024','StartTime':'08:55','EndTime':'09:30'},
+                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'16/06/2024','StartTime':'09:30','EndTime':'10:05'},
+                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'16/06/2024','StartTime':'10:05','EndTime':'10:45'},
+                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'16/06/2024','StartTime':'10:45','EndTime':'11:25'},
+                                    {'MainTitle':'Eid Prayer','BottomTitle':'Now in Progress','Date':'16/06/2024','StartTime':'11:25','EndTime':'12:00'},
+                                    {'MainTitle':'Eid Mubarak','BottomTitle':'From BHM','Date':'16/06/2024','StartTime':'12:00','EndTime':'12:30'},
                                     {'MainTitle':'Taraweeh','BottomTitle':'2nd 2/4 => 3rd 2/4','Date':'11/03/2024','StartTime':'20:50','EndTime':'23:00'},
                                     {'MainTitle':'Taraweeh','BottomTitle':'3rd 3/4 => 4th 3/4','Date':'12/03/2024','StartTime':'20:50','EndTime':'23:00'},
                                     {'MainTitle':'Taraweeh','BottomTitle':'4th 4/4 => 5th 4/4','Date':'13/03/2024','StartTime':'20:50','EndTime':'23:00'},

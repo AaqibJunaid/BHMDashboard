@@ -8,7 +8,7 @@ import PrayerView from '../../Components/PrayerView/PrayerView'
 import { getCurrentTime, getTodaysDate,getTodaysDateWithoutYear,getTomorrowDate,getTomorrowDateWithoutYear,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
 import { prayerTimesEndpoint,vimeoConfigEndpoint, mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from '../../Configs/prayerConfigs';
-import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames,todayPrayerDaySwitchMax,tomorrowPrayerDaySwitchMax,duaUpdateMax } from '../../Configs/timingConfigs';
+import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames,todayPrayerDaySwitchMax,tomorrowPrayerDaySwitchMax,duaUpdateMax,limitedImageDates } from '../../Configs/timingConfigs';
 import { appVersion } from '../../Configs/systemConfigs';
 
 
@@ -1004,7 +1004,7 @@ export default class MainView extends Component {
     var minute = getCurrentTime(false)
     minute = minute.substring(3,5)
 
-    if (minute=="00" || minute=="46"){
+    if (minute=="05" || minute=="30"){
       this.callAPI()
       this.setState({errorMessage:this.state.buildVersion})
     }
@@ -1038,6 +1038,7 @@ export default class MainView extends Component {
     let images = {};
     let cfImages = {};
     let ramadanImages = {}
+    let limitedImages = {}
     let today = new Date()
     let dow = getDayOfWeek(today)
     let allImages = []
@@ -1077,7 +1078,16 @@ export default class MainView extends Component {
     ri.keys().map((item, index) => { ramadanImages[item.replace('./', '')] = ri(item); });
     let rContent = Object.values(ramadanImages)
 
-    allImages = imgs
+    var refi = require.context('../../Assets/Content/Limited', false, /\.(png|jpe?g|svg)$/)
+    refi.keys().map((item, index) => { limitedImages[item.replace('./', '')] = refi(item); });
+    let limitedContent = Object.values(limitedImages)
+
+    if(limitedImageDates.includes(getTodaysDate())){
+      allImages = limitedContent
+    }
+    else{
+      allImages = imgs
+    }
     allImages.push(...imgsCommon)
     allImages = this.shuffleArray(allImages)
 
