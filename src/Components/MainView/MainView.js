@@ -6,7 +6,7 @@ import logo from '../../Assets/Logo.jpg'
 import qrCode from '../../Assets/Content/C.png'
 import PrayerView from '../../Components/PrayerView/PrayerView'
 import { getCurrentTime, getTodaysDate,getTodaysDateWithoutYear,getTomorrowDate,getTomorrowDateWithoutYear,getLongDate,getDayOfWeek } from '../../Functions/Date Functions';
-import { prayerTimesEndpoint,vimeoConfigEndpoint, mainVideoEmbed,shortVideoEmbed } from '../../Configs/urlConfigs';
+import { prayerTimesEndpoint,vimeoConfigEndpoint, mainVideoEmbed,shortVideoEmbed, limitedVideoEmbed, limitedVideoID } from '../../Configs/urlConfigs';
 import { PrayerNames,arabicPrayerNames } from '../../Configs/prayerConfigs';
 import { arabicSwitchMax,qrUpdateMax,imgUpdateMax,prayerHoldTimesMax,holdVideoTimeFrames,jummahPrayerTimes,eventTimeFrames,todayPrayerDaySwitchMax,tomorrowPrayerDaySwitchMax,duaUpdateMax,limitedImageDates } from '../../Configs/timingConfigs';
 import { appVersion } from '../../Configs/systemConfigs';
@@ -1087,8 +1087,9 @@ export default class MainView extends Component {
     }
     else{
       allImages = imgs
+      allImages.push(...imgsCommon)
     }
-    allImages.push(...imgsCommon)
+
     allImages = this.shuffleArray(allImages)
 
     let duaImages = {};
@@ -1208,14 +1209,19 @@ export default class MainView extends Component {
         break;
       }
     }
-
-    if (switchToMiniVideo){
-      var shortURL = shortVideoEmbed.replace("[shortVideoID]",this.state.shortVideoID)
-      this.setState({mainVideo:<div id='MainVideo'><iframe src={shortURL} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
+    if(limitedImageDates.includes(getTodaysDate())){
+      var limitedURL = limitedVideoEmbed.replace("[limitedVideoID]", limitedVideoID)
+      this.setState({mainVideo:<div id='MainVideo'><iframe src={limitedURL} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
     }
     else{
-      var mainURL = mainVideoEmbed.replace("[mainVideoID]",this.state.mainVideoID)
-      this.setState({mainVideo:<div id='MainVideo'><iframe src={mainURL} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
+      if (switchToMiniVideo){
+        var shortURL = shortVideoEmbed.replace("[shortVideoID]",this.state.shortVideoID)
+        this.setState({mainVideo:<div id='MainVideo'><iframe src={shortURL} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
+      }
+      else{
+        var mainURL = mainVideoEmbed.replace("[mainVideoID]",this.state.mainVideoID)
+        this.setState({mainVideo:<div id='MainVideo'><iframe src={mainURL} style={{top:0,left:0,display:'flex',justifyContent:'center',alignItems:'center',alignSelf:'center',width:'100%',height:'99.5%'}} frameborder="0" allow="autoplay;"></iframe></div>})
+      }
     }
   }
 

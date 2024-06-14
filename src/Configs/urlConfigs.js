@@ -3,6 +3,7 @@ const youtubeMiniID='PZlpsyNqNJQ'
 
 const mainVideoID='897985010'
 const shortVideoID='897985033'
+export const limitedVideoID='958679199'
 
 // export const nodejsEndpoint = "https://mosquerestapi.glitch.me/"
 export const prayerTimesEndpoint = "https://p2y4v6qkpc.execute-api.eu-west-2.amazonaws.com/prod/prayerdata"
@@ -13,3 +14,4 @@ export const youtubeMiniEmbed = "https://www.youtube.com/embed/"+youtubeMiniID+"
 // export const shortVideoEmbed = "https://player.vimeo.com/video/"+shortVideoID+"?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1"
 export const mainVideoEmbed = "https://player.vimeo.com/video/[mainVideoID]?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1"
 export const shortVideoEmbed = "https://player.vimeo.com/video/[shortVideoID]?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1"
+export const limitedVideoEmbed = "https://player.vimeo.com/video/[limitedVideoID]?autoplay=1&loop=1&title=0&byline=0&portrait=0&muted=1&background=1"
