@@ -526,12 +526,7 @@ export default class MainView extends Component {
     else{
       timings=this.state.tomorrowData
       if (getDayOfWeek(now)=='Thursday'){
-        if (now.toLocaleTimeString()>=jummahPrayerTimes[0]){
-          timings['Zuhur Jamat']=jummahPrayerTimes[1]
-        }
-        else{
           timings['Zuhur Jamat']=jummahPrayerTimes[0]
-        }
       }
       this.setState({tomorrowData:timings})
 
