@@ -74,4 +74,4 @@ export const eventTimeFrames = [
                                     {'MainTitle':'Taraweeh','BottomTitle':'Prayer in Progress','Date':'08/04/2024','StartTime':'22:05','EndTime':'23:15'},
                                     {'MainTitle':'Taraweeh','BottomTitle':'Prayer in Progress','Date':'09/04/2024','StartTime':'22:05','EndTime':'23:15'},
                                ]
-export const jummahPrayerTimes = ['12:10','13:10']
+export const jummahPrayerTimes = ['12:15','13:10']
