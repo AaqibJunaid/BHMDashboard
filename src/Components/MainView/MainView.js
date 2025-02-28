@@ -923,46 +923,6 @@ export default class MainView extends Component {
           this.setState({todayData:prayerTimesResult.Data.todayData,tomorrowData:prayerTimesResult.Data.tomorrowData,currentIslamicDate:prayerTimesResult.Data.hijriDate,dataStatus:"Data Refreshed at "+getCurrentTime(false)})
           this.setState({lastKnownData:{'lastRefreshed':getTodaysDate(), 'lastRefreshDT':new Date(),'todayData':this.state.todayData,'tomorrowData':prayerTimesResult.Data.tomorrowData,'hijriDate':prayerTimesResult.Data.hijriDate}})
           this.setState({errorMessage:this.state.buildVersion})
-          let iDate = prayerTimesResult.Data.hijriDate
-
-          if(iDate.includes("Ramadan")){
-            let imgs = this.state.allContentImages
-            let split = iDate.split(" ")[1]
-            let range = split.indexOf("Ramadan")-3
-            let fDate = split.substring(0,range)
-            let foundRamadan = false
-            let oldImgPos=0
-            let tempImgs=[]
-
-            for (let i=0;i<imgs.length;i++){
-              if(imgs[i].includes("/"+fDate+".")){
-                foundRamadan=true
-              }
-              else if(imgs[i].includes("/"+(Number(fDate)-1)+".")){
-                oldImgPos = i
-              }
-            }
-
-            if (oldImgPos!=0){
-              for (let i=0;i<imgs.length;i++){
-                if(i!=oldImgPos){
-                  tempImgs.push(imgs[i])
-                }
-              }
-              imgs=[]
-              imgs=tempImgs
-            }
-
-            if(!foundRamadan){
-              for (let i=0;i<this.state.ramadanContent.length;i++){
-                if(this.state.ramadanContent[i].includes("/"+fDate+".")){
-                  imgs.push(this.state.ramadanContent[i])
-                  this.setState({allContentImages:imgs})
-                  break;
-                }
-              }
-            }
-          }
         }
         else{
           this.handleApiError(prayerTimesResult.Data)
@@ -992,6 +952,7 @@ export default class MainView extends Component {
       }
       console.log(error.message)
     }
+    this.getContent()
   }
 
   getData(){
@@ -1034,65 +995,92 @@ export default class MainView extends Component {
     let cfImages = {};
     let ramadanImages = {}
     let limitedImages = {}
+    let rCommonImages={}
     let today = new Date()
     let dow = getDayOfWeek(today)
     let allImages = []
-    
-    switch (dow) {
-      case "Sunday":
-        var r = require.context('../../Assets/Content/Sunday', false, /\.(png|jpe?g|svg)$/)
-        break;
-      case "Monday":
-        var r = require.context('../../Assets/Content/Monday', false, /\.(png|jpe?g|svg)$/)
-        break;
-      case "Tuesday":
-        var r = require.context('../../Assets/Content/Tuesday', false, /\.(png|jpe?g|svg)$/)
-        break;
-      case "Wednesday":
-        var r = require.context('../../Assets/Content/Wednesday', false, /\.(png|jpe?g|svg)$/)
-        break;
-      case "Thursday":
-        var r = require.context('../../Assets/Content/Thursday', false, /\.(png|jpe?g|svg)$/)
-        break;
-      case "Friday":
-        var r = require.context('../../Assets/Content/Friday', false, /\.(png|jpe?g|svg)$/)
-        break;
-      case "Saturday":
-        var r = require.context('../../Assets/Content/Saturday', false, /\.(png|jpe?g|svg)$/)
-        break;
-    }
+    let imgs, imgsCommon, rContent, rCommon
 
-    r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
-    let imgs = Object.values(images)
+    if(this.state.currentIslamicDate=="" || this.state.currentIslamicDate.includes("Ramadan")==false){
+      switch (dow) {
+        case "Sunday":
+          var r = require.context('../../Assets/Content/Normal/Sunday', false, /\.(png|jpe?g|svg)$/)
+          break;
+        case "Monday":
+          var r = require.context('../../Assets/Content/Normal/Monday', false, /\.(png|jpe?g|svg)$/)
+          break;
+        case "Tuesday":
+          var r = require.context('../../Assets/Content/Normal/Tuesday', false, /\.(png|jpe?g|svg)$/)
+          break;
+        case "Wednesday":
+          var r = require.context('../../Assets/Content/Normal/Wednesday', false, /\.(png|jpe?g|svg)$/)
+          break;
+        case "Thursday":
+          var r = require.context('../../Assets/Content/Normal/Thursday', false, /\.(png|jpe?g|svg)$/)
+          break;
+        case "Friday":
+          var r = require.context('../../Assets/Content/Normal/Friday', false, /\.(png|jpe?g|svg)$/)
+          break;
+        case "Saturday":
+          var r = require.context('../../Assets/Content/Normal/Saturday', false, /\.(png|jpe?g|svg)$/)
+          break;
+      }
+  
+      r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+      imgs = Object.values(images)
 
-    var cf = require.context('../../Assets/Content/Common', false, /\.(png|jpe?g|svg)$/)
-    cf.keys().map((item, index) => { cfImages[item.replace('./', '')] = cf(item); });
-    let imgsCommon = Object.values(cfImages)
+      var cf = require.context('../../Assets/Content/Normal/Common', false, /\.(png|jpe?g|svg)$/)
+      cf.keys().map((item, index) => { cfImages[item.replace('./', '')] = cf(item); });
+      imgsCommon = Object.values(cfImages)
 
-    var ri = require.context('../../Assets/Content/Ramadan', false, /\.(png|jpe?g|svg)$/)
-    ri.keys().map((item, index) => { ramadanImages[item.replace('./', '')] = ri(item); });
-    let rContent = Object.values(ramadanImages)
-
-    var refi = require.context('../../Assets/Content/Limited', false, /\.(png|jpe?g|svg)$/)
-    refi.keys().map((item, index) => { limitedImages[item.replace('./', '')] = refi(item); });
-    let limitedContent = Object.values(limitedImages)
-
-    if(limitedImageDates.includes(getTodaysDate())){
-      allImages = limitedContent
-    }
-    else{
       allImages = imgs
       allImages.push(...imgsCommon)
+
     }
+    else{
+      var ri = require.context('../../Assets/Content/Ramadan', false, /\.(png|jpe?g|svg)$/)
+      ri.keys().map((item, index) => { ramadanImages[item.replace('./', '')] = ri(item); });
+      rContent = Object.values(ramadanImages)
 
-    allImages = this.shuffleArray(allImages)
+      var rc = require.context('../../Assets/Content/Ramadan/Common', false, /\.(png|jpe?g|svg)$/)
+      rc.keys().map((item, index) => { rCommonImages[item.replace('./', '')] = rc(item); });
+      rCommon = Object.values(rCommonImages)
 
+      allImages = rContent
+
+      let rImgs = []
+      let split = this.state.currentIslamicDate.split(" ")[1]
+      let range = split.indexOf("Ramadan")-3
+      let fDate = split.substring(0,range)
+
+      for (let i=0;i<allImages.length;i++){
+        if(allImages[i].includes("/"+fDate+".")){
+          rImgs.push(allImages[i])
+          break;
+        }
+      }
+
+      rImgs.push(...rCommon)
+
+      allImages=rImgs
+    }
+    
     let duaImages = {};
     var duaFolder = require.context('../../Assets/Content/Dua', false, /\.(png|jpe?g|svg)$/)
     duaFolder.keys().map((item, index) => { duaImages[item.replace('./', '')] = duaFolder(item); });
     let duas = Object.values(duaImages)
 
-    this.setState({allContentImages:allImages,duaImages:duas,firstContentImage:0,contentImage:allImages[0],ramadanContent:rContent})
+
+    if(limitedImageDates.includes(getTodaysDate())){
+      var refi = require.context('../../Assets/Content/Limited', false, /\.(png|jpe?g|svg)$/)
+      refi.keys().map((item, index) => { limitedImages[item.replace('./', '')] = refi(item); });
+      let limitedContent = Object.values(limitedImages)
+      allImages = limitedContent
+    }
+
+    allImages = this.shuffleArray(allImages)
+
+    this.setState({allContentImages:allImages,duaImages:duas,firstContentImage:0,contentImage:allImages[0]})
 
   }
 
