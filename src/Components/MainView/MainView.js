@@ -940,6 +940,7 @@ export default class MainView extends Component {
         this.handleVideo()
         this.setState({dataStatus:"Data Refreshed at "+getCurrentTime(false)})
       }
+      this.getContent()
     }
     catch (error){
       let currentStatus = this.shouldUpdateTiming()
@@ -951,8 +952,8 @@ export default class MainView extends Component {
         this.handleApiError(error.message)
       }
       console.log(error.message)
+      this.getContent()
     }
-    this.getContent()
   }
 
   getData(){
