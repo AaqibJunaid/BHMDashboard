@@ -377,8 +377,8 @@ export default class MainView extends Component {
 
       if(this.state.todayDate!==getTodaysDate()){
         this.setState({allContentImages:[],duaImages:{},firstContentImage:0,contentImage:[],todayDate:getTodaysDate()})
-        this.getContent()
         this.callAPI()
+        this.getContent()
       }
     }
   }
@@ -1000,6 +1000,8 @@ export default class MainView extends Component {
     let dow = getDayOfWeek(today)
     let allImages = []
     let imgs, imgsCommon, rContent, rCommon
+
+    console.log(this.state.currentIslamicDate)
 
     if(this.state.currentIslamicDate=="" || this.state.currentIslamicDate.includes("Ramadan")==false){
       switch (dow) {

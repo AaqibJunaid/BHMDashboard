@@ -1,1 +1,1 @@
-export const appVersion = '© Blackhall Mosque Version 9.0'
+export const appVersion = '© Blackhall Mosque Version 9.1'
