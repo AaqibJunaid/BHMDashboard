@@ -923,6 +923,11 @@ export default class MainView extends Component {
           this.setState({todayData:prayerTimesResult.Data.todayData,tomorrowData:prayerTimesResult.Data.tomorrowData,currentIslamicDate:prayerTimesResult.Data.hijriDate,dataStatus:"Data Refreshed at "+getCurrentTime(false)})
           this.setState({lastKnownData:{'lastRefreshed':getTodaysDate(), 'lastRefreshDT':new Date(),'todayData':this.state.todayData,'tomorrowData':prayerTimesResult.Data.tomorrowData,'hijriDate':prayerTimesResult.Data.hijriDate}})
           this.setState({errorMessage:this.state.buildVersion})
+          
+          if(prayerTimesResult.Data.hijriDate.includes("Ramadan")){
+            let allImages = this.shuffleArray(this.ramadanOverright(prayerTimesResult.Data.hijriDate))
+            this.setState({allContentImages:allImages,firstContentImage:0,contentImage:allImages[0]})
+          }
         }
         else{
           this.handleApiError(prayerTimesResult.Data)
@@ -940,7 +945,6 @@ export default class MainView extends Component {
         this.handleVideo()
         this.setState({dataStatus:"Data Refreshed at "+getCurrentTime(false)})
       }
-      this.getContent()
     }
     catch (error){
       let currentStatus = this.shouldUpdateTiming()
@@ -952,7 +956,6 @@ export default class MainView extends Component {
         this.handleApiError(error.message)
       }
       console.log(error.message)
-      this.getContent()
     }
   }
 
@@ -963,6 +966,7 @@ export default class MainView extends Component {
 
     if (minute=="05" || minute=="30"){
       this.callAPI()
+      this.getContent()
       this.setState({errorMessage:this.state.buildVersion})
     }
     else if(this.state.dataStatus=='Running on Backup Data' || this.state.dataStatus=='Data Failed to Refresh'){
@@ -994,15 +998,11 @@ export default class MainView extends Component {
   getContent() {
     let images = {};
     let cfImages = {};
-    let ramadanImages = {}
     let limitedImages = {}
-    let rCommonImages={}
     let today = new Date()
     let dow = getDayOfWeek(today)
     let allImages = []
-    let imgs, imgsCommon, rContent, rCommon
-
-    console.log(this.state.currentIslamicDate)
+    let imgs, imgsCommon
 
     if(this.state.currentIslamicDate=="" || this.state.currentIslamicDate.includes("Ramadan")==false){
       switch (dow) {
@@ -1041,38 +1041,13 @@ export default class MainView extends Component {
 
     }
     else{
-      var ri = require.context('../../Assets/Content/Ramadan', false, /\.(png|jpe?g|svg)$/)
-      ri.keys().map((item, index) => { ramadanImages[item.replace('./', '')] = ri(item); });
-      rContent = Object.values(ramadanImages)
-
-      var rc = require.context('../../Assets/Content/Ramadan/Common', false, /\.(png|jpe?g|svg)$/)
-      rc.keys().map((item, index) => { rCommonImages[item.replace('./', '')] = rc(item); });
-      rCommon = Object.values(rCommonImages)
-
-      allImages = rContent
-
-      let rImgs = []
-      let split = this.state.currentIslamicDate.split(" ")[1]
-      let range = split.indexOf("Ramadan")-3
-      let fDate = split.substring(0,range)
-
-      for (let i=0;i<allImages.length;i++){
-        if(allImages[i].includes("/"+fDate+".")){
-          rImgs.push(allImages[i])
-          break;
-        }
-      }
-
-      rImgs.push(...rCommon)
-
-      allImages=rImgs
+      allImages=this.ramadanOverright(this.state.currentIslamicDate)
     }
     
     let duaImages = {};
     var duaFolder = require.context('../../Assets/Content/Dua', false, /\.(png|jpe?g|svg)$/)
     duaFolder.keys().map((item, index) => { duaImages[item.replace('./', '')] = duaFolder(item); });
     let duas = Object.values(duaImages)
-
 
     if(limitedImageDates.includes(getTodaysDate())){
       var refi = require.context('../../Assets/Content/Limited', false, /\.(png|jpe?g|svg)$/)
@@ -1084,7 +1059,6 @@ export default class MainView extends Component {
     allImages = this.shuffleArray(allImages)
 
     this.setState({allContentImages:allImages,duaImages:duas,firstContentImage:0,contentImage:allImages[0]})
-
   }
 
   updateQRCodes(){
@@ -1133,6 +1107,40 @@ export default class MainView extends Component {
       var counter = this.state.firstContentImage + 1
       this.setState({firstContentImage:counter,contentImage:current})
     }
+  }
+
+  ramadanOverright(islamicDate){
+
+    let ramadanImages = {}
+    let rCommonImages={}
+    let allImages = []
+    let rContent, rCommon
+
+    var ri = require.context('../../Assets/Content/Ramadan', false, /\.(png|jpe?g|svg)$/)
+    ri.keys().map((item, index) => { ramadanImages[item.replace('./', '')] = ri(item); });
+    rContent = Object.values(ramadanImages)
+
+    var rc = require.context('../../Assets/Content/Ramadan/Common', false, /\.(png|jpe?g|svg)$/)
+    rc.keys().map((item, index) => { rCommonImages[item.replace('./', '')] = rc(item); });
+    rCommon = Object.values(rCommonImages)
+
+    allImages = rContent
+
+    let rImgs = []
+    let split = islamicDate.split(" ")[1]
+    let range = split.indexOf("Ramadan")-3
+    let fDate = split.substring(0,range)
+
+    for (let i=0;i<allImages.length;i++){
+      if(allImages[i].includes("/"+fDate+".")){
+        rImgs.push(allImages[i])
+        break;
+      }
+    }
+
+    rImgs.push(...rCommon)
+
+    return rImgs
   }
 
   updateDua(){
