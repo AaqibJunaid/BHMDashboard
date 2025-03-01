@@ -1,7 +1,6 @@
 export const arabicSwitchMax = 20
 export const qrUpdateMax = 10
-// export const imgUpdateMax = 20
-export const imgUpdateMax = 1
+export const imgUpdateMax = 20
 export const duaUpdateMax = 30
 export const todayPrayerDaySwitchMax=30
 export const tomorrowPrayerDaySwitchMax=15
